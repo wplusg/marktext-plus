@@ -28,27 +28,27 @@ function loadTranslations(language) {
       path.join(__dirname, '..', '..', 'shared', 'i18n', 'locales', `${language}.json`),
       path.join(process.cwd(), 'src', 'shared', 'i18n', 'locales', `${language}.json`)
     ]
-    
+
     for (const possiblePath of possiblePaths) {
       if (fs.existsSync(possiblePath)) {
         translationPath = possiblePath
         break
       }
     }
-    
+
     if (!translationPath) {
       throw new Error(`Translation file not found for language: ${language}`)
     }
-    
+
     const content = fs.readFileSync(translationPath, 'utf8')
-    
+
     let translationData
     try {
       translationData = JSON.parse(content)
     } catch (error) {
       throw error
     }
-    
+
     translationsCache[language] = translationData
     return translationData
   } catch (error) {
@@ -72,28 +72,27 @@ function getTranslation(key, language = 'en', params = {}) {
 
   // 支持点分隔的嵌套键
   const keys = key.split('.')
-  let value = translations
+  let probe = translations
 
-  for (const k of keys) {
-    if (value && typeof value === 'object' && value.hasOwnProperty(k)) {
-      value = value[k]
+  for (key of keys) {
+    // Navigate through nested objects until the string
+    if (key in probe) {
+      probe = probe[key]
     } else {
-      // 如果找不到翻译，返回键本身
-      return key
+      return key // Unable to find key, return the key itself
     }
   }
 
-  if (typeof value !== 'string') {
-    return key
+  if (typeof probe !== 'string') {
+    return key // If the final value is not a string, return the key
   }
 
-  // 参数替换
-  let result = value
+  // Parameter substitutions, for example "My name is: {{name}}"
   for (const [param, replacement] of Object.entries(params)) {
-    result = result.replace(new RegExp(`\\{\\{${param}\\}\\}`, 'g'), replacement)
+    probe = probe.replace(new RegExp(`\\{\\{${param}\\}\\}`, 'g'), replacement)
   }
 
-  return result
+  return probe
 }
 
 /**
