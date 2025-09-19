@@ -362,13 +362,21 @@ export const useEditorStore = defineStore('editor', {
     },
 
     LISTEN_FOR_CLOSE() {
+      const projectStore = useProjectStore()
       window.electron.ipcRenderer.on('mt::ask-for-close', () => {
         const unsavedFiles = this.tabs
           .filter((file) => !file.isSaved)
           .map((file) => {
             const { id, filename, pathname, markdown } = file
             const options = getOptionsFromState(file)
-            return { id, filename, pathname, markdown, options }
+            return {
+              id,
+              filename,
+              pathname,
+              markdown,
+              options,
+              defaultPath: getRootFolderFromState(projectStore)
+            }
           })
 
         if (unsavedFiles.length) {
@@ -389,12 +397,20 @@ export const useEditorStore = defineStore('editor', {
 
     ASK_FOR_SAVE_ALL(closeTabs) {
       const { tabs } = this
+      const projectStore = useProjectStore()
       const unsavedFiles = tabs
         .filter((file) => !(file.isSaved && /[^\n]/.test(file.markdown)))
         .map((file) => {
           const { id, filename, pathname, markdown } = file
           const options = getOptionsFromState(file)
-          return { id, filename, pathname, markdown, options }
+          return {
+            id,
+            filename,
+            pathname,
+            markdown,
+            options,
+            defaultPath: getRootFolderFromState(projectStore)
+          }
         })
 
       if (closeTabs) {

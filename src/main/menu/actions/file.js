@@ -168,7 +168,11 @@ const showUnsavedFilesMessage = async (win, files) => {
     type: 'warning',
     buttons: [t('dialog.save'), t('dialog.dontSave'), t('dialog.cancel')],
     defaultId: 0,
-    message: t('dialog.saveChanges', { count: files.length, type: files.length === 1 ? t('dialog.file') : t('dialog.files'), files: files.map((f) => f.filename).join('\n') }),
+    message: t('dialog.saveChanges', {
+      count: files.length,
+      type: files.length === 1 ? t('dialog.file') : t('dialog.files'),
+      files: files.map((f) => f.filename).join('\n')
+    }),
     detail: t('dialog.changesWillBeLost'),
     cancelId: 2,
     noLink: true
@@ -215,7 +219,19 @@ const removePrintServiceFromWindow = (win) => {
 // --- events -----------------------------------
 
 ipcMain.on('mt::save-tabs', (e, unsavedFiles) => {
-  Promise.all(unsavedFiles.map((file) => handleResponseForSave(e, file))).catch(log.error)
+  Promise.all(
+    unsavedFiles.map((file) =>
+      handleResponseForSave(
+        e,
+        file.id,
+        file.filename,
+        file.pathname,
+        file.markdown,
+        file.options,
+        file.defaultPath
+      )
+    )
+  ).catch(log.error)
 })
 
 ipcMain.on('mt::save-and-close-tabs', async (e, unsavedFiles) => {
@@ -227,7 +243,19 @@ ipcMain.on('mt::save-and-close-tabs', async (e, unsavedFiles) => {
 
   const { needSave } = userResult
   if (needSave) {
-    Promise.all(unsavedFiles.map((file) => handleResponseForSave(e, file)))
+    Promise.all(
+      unsavedFiles.map((file) =>
+        handleResponseForSave(
+          e,
+          file.id,
+          file.filename,
+          file.pathname,
+          file.markdown,
+          file.options,
+          file.defaultPath
+        )
+      )
+    )
       .then((arr) => {
         const tabIds = arr.filter((id) => id != null)
         win.webContents.send('mt::force-close-tabs-by-id', tabIds)
@@ -298,7 +326,19 @@ ipcMain.on('mt::close-window-confirm', async (e, unsavedFiles) => {
 
   const { needSave } = userResult
   if (needSave) {
-    Promise.all(unsavedFiles.map((file) => handleResponseForSave(e, file)))
+    Promise.all(
+      unsavedFiles.map((file) =>
+        handleResponseForSave(
+          e,
+          file.id,
+          file.filename,
+          file.pathname,
+          file.markdown,
+          file.options,
+          file.defaultPath
+        )
+      )
+    )
       .then(() => {
         ipcMain.emit('window-close-by-id', win.id)
       })
