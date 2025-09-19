@@ -10,11 +10,17 @@
 
 - A lot of patience
 
-### 1.2 Linux Specific Pre-requisites (Optional)
+### 1.2 Linux Specific Pre-requisites
 
 - Linux environments require additional dependencies, please see [Linux Specific Pre-reqs](LINUX_DEV.md)
 
-### 1.3 Clone and Install
+### 1.3 Windows Specific Pre-requisites
+
+- You will need [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (Scroll all the way to the bottom)
+  - Additionally, you need **spectre-mitigated MSVC**, go to "Individual Components" and select "MSVC ... - VS2022 C++ Spectre-Mitigated Libs"
+  - Many native libraries do not support ClangCL well yet, hence we force it to use MSVC in our `.npmrc`
+
+### 1.4 Clone and Install
 
 ```bash
 git clone https://github.com/Tkaixiang/marktext.git
@@ -22,7 +28,7 @@ cd marktext
 npm install
 ```
 
-### 1.4 Run in Development
+### 1.5 Run in Development
 
 ```bash
 $ npm run dev

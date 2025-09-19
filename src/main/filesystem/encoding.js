@@ -1,46 +1,21 @@
-import chardet from 'chardet'
+import ced from 'ced'
 
-const ICONV_LITE_NAME = {
-  // Unicode
-  'UTF-8': 'utf8',
-  'UTF-16LE': 'utf16le',
-  'UTF-16BE': 'utf-16be',
-  'UTF-32LE': 'UTF-32LE', // iconv-lite accepts these names directly
-  'UTF-32BE': 'UTF-32BE',
+const CED_ICONV_ENCODINGS = {
+  'BIG5-CP950': 'big5',
+  KSC: 'euckr',
+  'ISO-2022-KR': 'euckr',
+  GB: 'gb2312',
+  ISO_2022_CN: 'gb2312',
 
-  // Japanese
-  Shift_JIS: 'Shift_JIS',
-  'EUC-JP': 'EUC-JP',
+  Unicode: 'utf8',
 
-  // Chinese
-  // WHATWG treats many GB* labels as GBK; using GB18030 is safest for decoding
-  GBK: 'GBK',
-  GB18030: 'GB18030',
-
-  // Korean
-  'EUC-KR': 'EUC-KR',
-
-  // Traditional Chinese
-  Big5: 'Big5',
-
-  // Western/others
-  'windows-1250': 'windows-1250',
-  'windows-1251': 'windows-1251',
-  'windows-1252': 'windows-1252',
-  'windows-1253': 'windows-1253',
-  'windows-1254': 'windows-1254',
-  'windows-1255': 'windows-1255',
-  'windows-1256': 'windows-1256',
-  'ISO-8859-1': 'ISO-8859-1',
-  'ISO-8859-2': 'ISO-8859-2',
-  'ISO-8859-5': 'ISO-8859-5',
-  'ISO-8859-6': 'ISO-8859-6',
-  'ISO-8859-7': 'ISO-8859-7',
-  'ISO-8859-8': 'ISO-8859-8',
-  'ISO-8859-9': 'ISO-8859-9',
-  'KOI8-R': 'KOI8-R',
-  // Treat all ASCII-ish detections as UTF-8 safely
-  ASCII: 'utf8'
+  // Map ASCII, subsets of utf-8 to UTF-8,
+  JIS: 'utf8',
+  SJS: 'utf8',
+  shiftjis: 'utf8',
+  'ASCII-7-bit': 'utf8',
+  ASCII: 'utf8',
+  MACINTOSH: 'utf8'
 }
 
 // Byte Order Mark's to detect endianness and encoding.
@@ -90,11 +65,11 @@ export const guessEncoding = (buffer, autoGuessEncoding) => {
 
   // Auto guess encoding, otherwise use UTF8.
   if (autoGuessEncoding) {
-    encoding = chardet.detect(buffer)
-    if (ICONV_LITE_NAME[encoding]) {
-      encoding = ICONV_LITE_NAME[encoding]
+    encoding = ced(buffer)
+    if (CED_ICONV_ENCODINGS[encoding]) {
+      encoding = CED_ICONV_ENCODINGS[encoding]
     } else {
-      encoding = ICONV_LITE_NAME.toLowerCase().replace(/-_/g, '')
+      encoding = encoding.toLowerCase().replace(/-_/g, '')
     }
   }
   return { encoding, isBom }

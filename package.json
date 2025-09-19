@@ -15,7 +15,8 @@
     "build:win": "npm run build && electron-builder --win --publish never",
     "build:mac": "npm run build && electron-builder --mac --publish never",
     "build:linux": "npm run build && electron-builder --linux --publish never",
-    "build:release": "npm run build && electron-builder --win --mac --linux --publish never"
+    "build:release": "npm run build && electron-builder --win --mac --linux --publish never",
+    "rebuild:ced": "cross-env CL=\"-Wno-c++11-narrowing\" npm rebuild ced --build-from-source"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -29,7 +30,7 @@
     "@vscode/ripgrep": "^1.15.14",
     "arg": "^5.0.2",
     "axios": "^1.11.0",
-    "chardet": "^2.1.0",
+    "ced": "^2.0.0",
     "chokidar": "^4.0.3",
     "codemirror": "^5.65.19",
     "command-exists": "^1.2.9",
@@ -71,9 +72,6 @@
     "vue-i18n": "^11.1.11",
     "vue-router": "^4.5.1",
     "webfontloader": "^1.6.28"
-  },
-  "overrides": {
-    "node-gyp": "^11.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.0",
