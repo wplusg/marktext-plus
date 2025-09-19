@@ -1,5 +1,3 @@
-import { i18n } from '../i18n'
-
 /// Check whether the package is updatable at runtime.
 export const isUpdatable = () => {
   // TODO: t('commands.utils.todoUpdateCheck')

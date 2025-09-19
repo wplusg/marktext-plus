@@ -3,7 +3,7 @@
     class="side-bar-toc"
     :class="[{ 'side-bar-toc-overflow': !wordWrapInToc, 'side-bar-toc-wordwrap': wordWrapInToc }]"
   >
-    <div class="title">{{ translate('sideBar.toc.title') }}</div>
+    <div class="title">{{ t('sideBar.toc.title') }}</div>
     <el-tree
       v-if="toc.length"
       :data="toc"
@@ -17,14 +17,13 @@
 </template>
 
 <script setup>
-import { t } from '../../i18n'
 import { useEditorStore } from '@/store/editor'
 import { usePreferencesStore } from '@/store/preferences'
 import bus from '../../bus'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
-// 确保翻译函数在模板中可用
-const translate = t
+const { t } = useI18n()
 
 const editorStore = useEditorStore()
 const preferencesStore = usePreferencesStore()

@@ -37,8 +37,9 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import bus from '@/bus'
 import importIconUrl from '@/assets/icons/import_file.svg?url'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const importIcon = ref({ url: importIconUrl })
 const showImport = ref(false)
 const isOver = ref(false)

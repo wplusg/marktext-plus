@@ -59,7 +59,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import bus from '../../bus'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const showTweetDialog = ref(false)
 const value = ref('')

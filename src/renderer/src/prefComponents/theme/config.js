@@ -1,3 +1,5 @@
+import { t } from '../../i18n'
+
 export const themes = [
   {
     name: 'light'
@@ -19,15 +21,16 @@ export const themes = [
   }
 ]
 
-import { t } from '../../i18n'
-
-export const getAutoSwitchThemeOptions = () => [{
-  label: t('preferences.theme.autoSwitchOptions.startup'),
-  value: 0
-}, /* {
+export const getAutoSwitchThemeOptions = () => [
+  {
+    label: t('preferences.theme.autoSwitchOptions.startup'),
+    value: 0
+  },
+  /* {
   label: 'Only at runtime',
   value: 1
 }, */ {
-  label: t('preferences.theme.autoSwitchOptions.never'),
-  value: 2
-}]
+    label: t('preferences.theme.autoSwitchOptions.never'),
+    value: 2
+  }
+]

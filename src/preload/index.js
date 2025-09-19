@@ -12,6 +12,11 @@ import {
 import { rgPath } from '@vscode/ripgrep'
 import path from 'path'
 import commandExists from 'command-exists'
+import { loadTranslations } from '../common/i18n'
+
+const i18nUtils = {
+  loadTranslations
+}
 
 const customElectronAPI = {
   shell,
@@ -33,7 +38,7 @@ const fileUtilsAPI = {
   pathExistsSync: (path) => fs.pathExistsSync(path),
   isChildOfDirectory: (dir, child) => isChildOfDirectory(dir, child),
   hasMarkdownExtension: (filename) => hasMarkdownExtension(filename),
-  MARKDOWN_INCLUSIONS: MARKDOWN_INCLUSIONS,
+  MARKDOWN_INCLUSIONS,
   isSamePathSync: (pathA, pathB) => isSamePathSync(pathA, pathB),
   isImageFile: (filepath) => isImageFile(filepath)
 }
@@ -89,6 +94,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('fileUtils', fileUtilsAPI)
     contextBridge.exposeInMainWorld('path', path)
     contextBridge.exposeInMainWorld('commandExists', commandAPI)
+    contextBridge.exposeInMainWorld('i18nUtils', i18nUtils)
   } catch (error) {
     console.error(error)
   }
@@ -99,4 +105,5 @@ if (process.contextIsolated) {
   window.fileUtils = fileUtilsAPI
   window.path = path
   window.commandExists = commandAPI
+  window.i18nUtils = i18nUtils
 }

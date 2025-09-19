@@ -16,7 +16,9 @@
             @keyup="searchFn($event)"
           />
           <div class="controls">
-            <span class="search-result">{{ t('search.searchResultCount', { current: highlightIndex + 1, total: highlightCount }) }}</span>
+            <span class="search-result">{{
+              t('search.searchResultCount', { current: highlightIndex + 1, total: highlightCount })
+            }}</span>
             <span
               :title="t('search.caseSensitive')"
               class="is-case-sensitive"
@@ -61,7 +63,11 @@
       </section>
       <section v-if="type === 'replace'" class="replace">
         <div class="input-wrapper replace-input">
-          <input v-model="replaceValue" type="text" :placeholder="t('search.replacementPlaceholder')" />
+          <input
+            v-model="replaceValue"
+            type="text"
+            :placeholder="t('search.replacementPlaceholder')"
+          />
         </div>
         <div class="button-group">
           <el-tooltip
@@ -106,7 +112,9 @@ import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
 import { useEditorStore } from '@/store/editor'
 import { storeToRefs } from 'pinia'
-import { t } from '../../../i18n'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const editorStore = useEditorStore()
 

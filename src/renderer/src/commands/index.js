@@ -4,7 +4,7 @@ import bus from '../bus'
 import { delay, isOsx } from '@/util'
 import { isUpdatable } from './utils'
 import getCommandDescriptionById from './descriptions'
-// Removed i18n import - using hardcoded English descriptions
+import { t } from '../i18n'
 
 export { default as FileEncodingCommand } from './fileEncoding'
 export { default as LineEndingCommand } from './lineEnding'
@@ -682,10 +682,7 @@ if (isOsx) {
 export const getCommandsWithDescriptions = async () => {
   // Create a deep copy of commands to avoid modifying the original
   const commandsCopy = JSON.parse(JSON.stringify(commands))
-  
-  // Import translation function here to ensure it's available
-  const { t } = await import('../i18n')
-  
+
   // Update descriptions for all commands
   const updateDescriptions = (commandList) => {
     for (const item of commandList) {
@@ -694,7 +691,7 @@ export const getCommandsWithDescriptions = async () => {
       if (id) {
         item.description = getCommandDescriptionById(id)
       }
-      
+
       // Special handling for theme subcommands
       if (id === 'window.change-theme' && subcommands && Array.isArray(subcommands)) {
         for (const subcommand of subcommands) {
@@ -714,14 +711,14 @@ export const getCommandsWithDescriptions = async () => {
           }
         }
       }
-      
+
       // Also update other subcommands descriptions
       if (subcommands && Array.isArray(subcommands)) {
         updateDescriptions(subcommands)
       }
     }
   }
-  
+
   updateDescriptions(commandsCopy)
   return commandsCopy
 }

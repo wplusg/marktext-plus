@@ -54,7 +54,9 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogTableVisible = false">{{ t('common.cancel') }}</el-button>
-          <el-button type="primary" @click="handleDialogTableConfirm">{{ t('common.ok') }}</el-button>
+          <el-button type="primary" @click="handleDialogTableConfirm">{{
+            t('common.ok')
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -83,7 +85,6 @@ import FrontMenu from 'muya/lib/ui/frontMenu'
 import EditorSearch from '../search'
 import bus from '@/bus'
 import { DEFAULT_EDITOR_FONT_FAMILY } from '@/config'
-import { t } from '../../i18n'
 import notice from '@/services/notification'
 import Printer from '@/services/printService'
 import { SpellcheckerLanguageCommand } from '@/commands'
@@ -97,12 +98,14 @@ import { usePreferencesStore } from '@/store/preferences'
 import { useEditorStore } from '@/store/editor'
 import { useProjectStore } from '@/store/project'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 import 'muya/themes/default.css'
 import '@/assets/themes/codemirror/one-dark.css'
 // import 'view-image/lib/imgViewer.css'
 import CloseIcon from '@/assets/icons/close.svg'
 
+const { t } = useI18n()
 const STANDAR_Y = 320
 
 const props = defineProps({

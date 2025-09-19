@@ -4,7 +4,6 @@ import deleteIcon from '../../assets/pngicon/delete/2.png'
 import turnIcon from '../../assets/pngicon/turninto/2.png'
 import { isOsx } from '../../config'
 import { createQuickInsertObj } from '../quickInsert/config'
-import { getTranslation } from '../../../../shared/i18n'
 
 // 创建一个函数来生成子菜单，接收翻译函数作为参数
 const createWholeSubMenu = (t) => {
@@ -22,26 +21,31 @@ export const createMenu = (t) => {
   // 如果没有翻译函数，直接返回键名
   const translate = t || ((key) => key)
 
-  return [{
-    icon: copyIcon,
-    label: 'duplicate',
-    text: translate('frontMenu.duplicate'),
-    shortCut: `⇧${COMMAND_KEY}P`
-  }, {
-    icon: turnIcon,
-    label: 'turnInto',
-    text: translate('frontMenu.turnInto')
-  }, {
-    icon: newIcon,
-    label: 'new',
-    text: translate('frontMenu.newParagraph'),
-    shortCut: `⇧${COMMAND_KEY}N`
-  }, {
-    icon: deleteIcon,
-    label: 'delete',
-    text: translate('frontMenu.delete'),
-    shortCut: `⇧${COMMAND_KEY}D`
-  }]
+  return [
+    {
+      icon: copyIcon,
+      label: 'duplicate',
+      text: translate('frontMenu.duplicate'),
+      shortCut: `⇧${COMMAND_KEY}P`
+    },
+    {
+      icon: turnIcon,
+      label: 'turnInto',
+      text: translate('frontMenu.turnInto')
+    },
+    {
+      icon: newIcon,
+      label: 'new',
+      text: translate('frontMenu.newParagraph'),
+      shortCut: `⇧${COMMAND_KEY}N`
+    },
+    {
+      icon: deleteIcon,
+      label: 'delete',
+      text: translate('frontMenu.delete'),
+      shortCut: `⇧${COMMAND_KEY}D`
+    }
+  ]
 }
 
 // 为了向后兼容，保留默认的 menu 导出
@@ -135,15 +139,16 @@ export const getLabel = createGetLabel()
 
 export const createGetSubMenu = (t) => {
   const wholeSubMenu = createWholeSubMenu(t)
-  
+
   return (block, startBlock, endBlock) => {
     const { type } = block
     switch (type) {
       case 'p': {
-        return wholeSubMenu.filter(menuItem => {
-          const REG_EXP = startBlock.key === endBlock.key
-            ? /front-matter|hr|table/
-            : /front-matter|hr|table|heading/
+        return wholeSubMenu.filter((menuItem) => {
+          const REG_EXP =
+            startBlock.key === endBlock.key
+              ? /front-matter|hr|table/
+              : /front-matter|hr|table|heading/
 
           return !REG_EXP.test(menuItem.label)
         })
@@ -154,13 +159,13 @@ export const createGetSubMenu = (t) => {
       case 'h4':
       case 'h5':
       case 'h6': {
-        return wholeSubMenu.filter(menuItem => {
+        return wholeSubMenu.filter((menuItem) => {
           return /heading|paragraph/.test(menuItem.label)
         })
       }
       case 'ul':
       case 'ol': {
-        return wholeSubMenu.filter(menuItem => {
+        return wholeSubMenu.filter((menuItem) => {
           return /ul|ol/.test(menuItem.label)
         })
       }

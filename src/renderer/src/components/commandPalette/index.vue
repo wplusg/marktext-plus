@@ -56,10 +56,11 @@ import { useCommandCenterStore } from '@/store/commandCenter'
 import log from 'electron-log'
 import bus from '../../bus'
 import loading from '../loading'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
 const searchInput = ref(null)
 let commandItems = []
 
+const { t } = useI18n()
 const currentCommand = ref(null)
 const defaultPlaceholderText = computed(() => {
   try {
@@ -276,7 +277,7 @@ const executeCommand = (commandId) => {
 
 onMounted(() => {
   bus.on('show-command-palette', handleShow)
-  
+
   // 监听语言变化事件，重新获取命令列表
   bus.on('language-changed', () => {
     // 如果命令面板当前是打开状态，重新加载命令

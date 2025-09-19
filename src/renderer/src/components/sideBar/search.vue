@@ -39,7 +39,9 @@
     <div v-if="showNoFolderOpenedMessage" class="search-message-section">
       <span>{{ t('sideBar.search.noFolderOpen') }}</span>
     </div>
-    <div v-if="showNoResultFoundMessage" class="search-message-section">{{ t('sideBar.search.noResultsFound') }}</div>
+    <div v-if="showNoResultFoundMessage" class="search-message-section">
+      {{ t('sideBar.search.noResultsFound') }}
+    </div>
     <div v-if="searchErrorString" class="search-message-section">{{ searchErrorString }}</div>
 
     <div v-show="showSearchCancelArea" class="cancel-area">
@@ -66,7 +68,6 @@
 </template>
 
 <script setup>
-import { t } from '../../i18n'
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useLayoutStore } from '@/store/layout'
 import { useProjectStore } from '@/store/project'
@@ -81,7 +82,9 @@ import FindCaseIcon from '@/assets/icons/searchIcons/iconCase.svg'
 import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
 import { VideoPause } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const layoutStore = useLayoutStore()
 const projectStore = useProjectStore()
 const editorStore = useEditorStore()

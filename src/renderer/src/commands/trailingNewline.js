@@ -1,7 +1,7 @@
 import { delay } from '@/util'
 import bus from '../bus'
 import getCommandDescriptionById from './descriptions'
-import { t } from '../../i18n'
+import { t } from '../i18n'
 
 const descriptions = ['Trim all trailing newlines', 'Ensure single newline', 'Disabled']
 

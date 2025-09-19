@@ -2,7 +2,7 @@ import bus from '../bus'
 import { delay } from '@/util'
 import FileSearcher from '@/node/fileSearcher'
 import getCommandDescriptionById from './descriptions'
-import { t } from '../../i18n'
+import { t } from '../i18n'
 
 const SPECIAL_CHARS = /[\[\]\\^$.\|\?\*\+\(\)\/]{1}/g // eslint-disable-line no-useless-escape
 

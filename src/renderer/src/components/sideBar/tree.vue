@@ -15,15 +15,15 @@
         >
           <use xlink:href="#icon-arrow"></use>
         </svg>
-        <span class="default-cursor text-overflow" @click.stop="toggleOpenedFiles()"
-          >{{ translate('sideBar.tree.openedFiles') }}</span
-        >
-        <a href="javascript:;" :title="translate('sideBar.tree.saveAll')" @click.stop="saveAll(false)">
+        <span class="default-cursor text-overflow" @click.stop="toggleOpenedFiles()">{{
+          t('sideBar.tree.openedFiles')
+        }}</span>
+        <a href="javascript:;" :title="t('sideBar.tree.saveAll')" @click.stop="saveAll(false)">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-save-all"></use>
           </svg>
         </a>
-        <a href="javascript:;" :title="translate('sideBar.tree.closeAll')" @click.stop="saveAll(true)">
+        <a href="javascript:;" :title="t('sideBar.tree.closeAll')" @click.stop="saveAll(true)">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-close-all"></use>
           </svg>
@@ -82,23 +82,26 @@
           "
           class="empty-project"
         >
-          <span>{{ translate('sideBar.tree.emptyProject') }}</span>
+          <span>{{ t('sideBar.tree.emptyProject') }}</span>
           <div class="centered-group">
-            <button class="button-primary" @click="createFile">{{ translate('sideBar.tree.createFile') }}</button>
+            <button class="button-primary" @click="createFile">
+              {{ t('sideBar.tree.createFile') }}
+            </button>
           </div>
         </div>
       </div>
     </div>
     <div v-else class="open-project">
       <div class="centered-group">
-        <button class="button-primary" @click="openFolder">{{ translate('sideBar.tree.openFolder') }}</button>
+        <button class="button-primary" @click="openFolder">
+          {{ t('sideBar.tree.openFolder') }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { t } from '../../i18n'
 import { ref, onMounted, nextTick, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'
@@ -107,9 +110,9 @@ import Folder from './treeFolder.vue'
 import File from './treeFile.vue'
 import OpenedFile from './treeOpenedTab.vue'
 import bus from '../../bus'
+import { useI18n } from 'vue-i18n'
 
-// 确保翻译函数在模板中可用
-const translate = t
+const { t } = useI18n()
 
 const props = defineProps({
   projectTree: {

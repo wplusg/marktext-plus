@@ -10,9 +10,7 @@
       <h3>{{ t('exportSettings.title') }}</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane :label="t('exportSettings.info.label')" name="info">
-          <span class="text"
-            >{{ t('exportSettings.info.description') }}</span
-          >
+          <span class="text">{{ t('exportSettings.info.description') }}</span>
         </el-tab-pane>
         <el-tab-pane :label="t('exportSettings.page.label')" name="page">
           <!-- HTML -->
@@ -150,7 +148,11 @@
             :on-change="(value) => onSelectChange('theme', value)"
           ></cur-select>
         </el-tab-pane>
-        <el-tab-pane v-if="isPrintable" :label="t('exportSettings.headerFooter.label')" name="header">
+        <el-tab-pane
+          v-if="isPrintable"
+          :label="t('exportSettings.headerFooter.label')"
+          name="header"
+        >
           <div class="text">{{ t('exportSettings.headerFooter.description') }}</div>
           <cur-select
             :description="t('exportSettings.headerFooter.headerType')"
@@ -248,7 +250,9 @@
         </el-tab-pane>
       </el-tabs>
       <div class="button-controlls">
-        <button class="button-primary" @click="handleClicked">{{ t('exportSettings.export') }}</button>
+        <button class="button-primary" @click="handleClicked">
+          {{ t('exportSettings.export') }}
+        </button>
       </div>
     </el-dialog>
   </div>
@@ -265,7 +269,9 @@ import FontTextBox from '@/prefComponents/common/fontTextBox'
 import Range from '@/prefComponents/common/range'
 import TextBox from '@/prefComponents/common/textBox'
 import { getPageSizeList, getHeaderFooterTypes, getExportThemeList } from './exportOptions'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const exportType = ref('')
 const themesLoaded = ref(false)

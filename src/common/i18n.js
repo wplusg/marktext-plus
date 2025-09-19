@@ -19,44 +19,30 @@ function loadTranslations(language) {
 
   try {
     // 尝试多个可能的路径
-    let translationPath
-    const possiblePaths = [
-      // 构建后的路径（主进程）
-      path.join(process.cwd(), 'out', 'main', 'locales', `${language}.json`),
-      // 开发环境路径
-      path.join(__dirname, 'locales', `${language}.json`),
-      path.join(__dirname, '..', '..', 'shared', 'i18n', 'locales', `${language}.json`),
-      path.join(process.cwd(), 'src', 'shared', 'i18n', 'locales', `${language}.json`)
-    ]
 
-    for (const possiblePath of possiblePaths) {
-      if (fs.existsSync(possiblePath)) {
-        translationPath = possiblePath
-        break
-      }
-    }
+    // Since this script is used in both main and preload processes, we can't use global.__static directly here since it is only for the main process
+    const localePath =
+      process.env.NODE_ENV === 'development'
+        ? path.join(process.cwd(), 'static', 'locales', `${language}.json`)
+        : path.join(process.resourcesPath, 'static', 'locales', `${language}.json`)
 
-    if (!translationPath) {
+    if (!fs.existsSync(localePath)) {
       throw new Error(`Translation file not found for language: ${language}`)
     }
 
-    const content = fs.readFileSync(translationPath, 'utf8')
+    const content = fs.readFileSync(localePath, 'utf8')
 
-    let translationData
-    try {
-      translationData = JSON.parse(content)
-    } catch (error) {
-      throw error
-    }
+    const translationData = JSON.parse(content)
 
     translationsCache[language] = translationData
     return translationData
   } catch (error) {
     // 回退到英文
+    console.error('Error loading translation:', error)
     if (language !== 'en') {
       return loadTranslations('en')
     }
-    return {}
+    return null
   }
 }
 

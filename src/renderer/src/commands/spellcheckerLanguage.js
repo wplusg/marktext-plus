@@ -4,7 +4,7 @@ import { delay } from '@/util'
 import { SpellChecker } from '@/spellchecker'
 import { getLanguageName } from '@/spellchecker/languageMap'
 import getCommandDescriptionById from './descriptions'
-import { t } from '../../i18n'
+import { t } from '../i18n'
 
 // Command to switch the spellchecker language
 class SpellcheckerLanguageCommand {
@@ -23,10 +23,10 @@ class SpellcheckerLanguageCommand {
   run = async () => {
     const langs = await SpellChecker.getAvailableDictionaries()
     // 只显示英语拼写检查选项
-    const englishLangs = langs.filter(lang => lang.startsWith('en'))
+    const englishLangs = langs.filter((lang) => lang.startsWith('en'))
     // 如果没有英语选项，提供默认的 en-US
     const finalLangs = englishLangs.length > 0 ? englishLangs : ['en-US']
-    
+
     this.subcommands = finalLangs.map((lang) => {
       return {
         id: `spellchecker.switch-language-id-${lang}`,

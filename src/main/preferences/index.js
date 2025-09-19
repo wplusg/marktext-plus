@@ -6,7 +6,7 @@ import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import log from 'electron-log'
 import { isWindows } from '../config'
 import { hasSameKeys } from '../utils'
-import { getSupportedLanguages, isLanguageSupported } from '../../shared/i18n'
+import { getSupportedLanguages, isLanguageSupported } from '../../common/i18n'
 import schema from './schema'
 
 const PREFERENCES_FILE_NAME = 'preferences'
@@ -180,25 +180,25 @@ class Preference extends EventEmitter {
       // 获取系统语言
       const systemLocale = app.getLocale()
       log.info(`System locale detected: ${systemLocale}`)
-      
+
       // 获取支持的语言列表
       const supportedLanguages = getSupportedLanguages()
-      
+
       // 直接匹配完整的语言代码（如 zh-CN）
       if (isLanguageSupported(systemLocale)) {
         log.info(`Using system language: ${systemLocale}`)
         return systemLocale
       }
-      
+
       // 尝试匹配语言的主要部分（如 zh）
       const primaryLanguage = systemLocale.split('-')[0]
-      const matchedLanguage = supportedLanguages.find(lang => lang.startsWith(primaryLanguage))
-      
+      const matchedLanguage = supportedLanguages.find((lang) => lang.startsWith(primaryLanguage))
+
       if (matchedLanguage) {
         log.info(`Using matched language: ${matchedLanguage} for system locale: ${systemLocale}`)
         return matchedLanguage
       }
-      
+
       log.info(`System language ${systemLocale} not supported, will use default language`)
       return null
     } catch (error) {

@@ -42,7 +42,9 @@
         </li>
       </ul>
       <div v-if="!allMatchesShown">
-        <div class="button tiny" @click="handleShowMoreMatches">{{ translate('sideBar.search.showMoreMatches') }}</div>
+        <div class="button tiny" @click="handleShowMoreMatches">
+          {{ t('sideBar.search.showMoreMatches') }}
+        </div>
       </div>
     </div>
   </div>
@@ -53,10 +55,9 @@ import { ref, computed } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import { storeToRefs } from 'pinia'
 import bus from '../../bus'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
 
-// 确保翻译函数在模板中可用
-const translate = t
+const { t } = useI18n()
 
 const props = defineProps({
   searchResult: {

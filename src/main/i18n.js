@@ -1,4 +1,4 @@
-import { getTranslation } from '../shared/i18n'
+import { getTranslation } from '../common/i18n'
 import { BrowserWindow } from 'electron'
 
 // 当前语言设置（可以从配置文件或用户设置中获取）

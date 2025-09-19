@@ -31,7 +31,9 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useMainStore } from '@/store'
 import bus from '../../bus'
 import MarkTextLogo from '../../assets/images/logo.png'
-import { t } from '../../i18n'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const name = 'MarkText'
 const copyright = t('about.copyright', { year: new Date().getFullYear() })
