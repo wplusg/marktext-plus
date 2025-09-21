@@ -105,12 +105,10 @@ const enterCtrl = (ContentState) => {
     const parent = this.getParent(block)
 
     let newBlock = null
-    if (parent && /ul|ol|blockquote/.test(parent.type)) {
+    if (parent && /ol|blockquote/.test(parent.type)) {
       newBlock = this.createBlockP()
       if (this.isOnlyChild(block)) {
         this.insertAfter(newBlock, parent)
-        // We need to unindent all the children if the parent is a list item.
-
         this.removeBlock(parent)
       } else if (this.isFirstChild(block)) {
         this.insertBefore(newBlock, parent)
@@ -122,28 +120,65 @@ const enterCtrl = (ContentState) => {
       }
 
       this.removeBlock(block)
-      if (parent.type === 'ul' && block.children.length > 0) {
+    } else if (parent && parent.type === 'ul') {
+      // Check if this is the last indent, then we should insert it into the grandparent (the root element) instead
+      // This effectively exists the list
+
+      const grandParent = this.getParent(parent)
+      const greatGrandParent = this.getParent(grandParent)
+      if (greatGrandParent && greatGrandParent.type === 'ul') {
+        if (block.listItemType === 'task') {
+          const { checked } = parent.children[0]
+          newBlock = this.createTaskItemBlock(null, checked)
+        } else {
+          newBlock = this.createBlockLi()
+          newBlock.listItemType = parent.listItemType
+          newBlock.bulletMarkerOrDelimiter = parent.bulletMarkerOrDelimiter
+        }
+        newBlock.isLooseListItem = parent.isLooseListItem
+
+        // Insert the new list item after the grandparent (the parent list item of the current list)
+        this.insertAfter(newBlock, grandParent)
+
+        block.children.forEach((child) => {
+          if (child.type === 'ul') this.appendChild(newBlock, child)
+        })
+        // Also append all the nextSibilings of the current list item to a ul
+        // under the newBlock
+        if (block.nextSibling) {
+          // Also append all the nextSibilings of the current list item to a ul
+          // under the newBlock
+          const newULBlock = this.createBlock('ul')
+          this.appendChild(newBlock, newULBlock)
+          let probe = this.getBlock(block.nextSibling)
+          const addedChildKeys = []
+          while (probe) {
+            const nextSibilingSaved = probe.nextSibling // save it before we overwrite it by appending it
+            this.appendChild(newULBlock, probe)
+            addedChildKeys.push(probe.key)
+            probe = this.getBlock(nextSibilingSaved)
+          }
+          // Remove all the added siblings from the current parent
+          parent.children = parent.children.filter((child) => !addedChildKeys.includes(child.key))
+        }
+        // Remove list item from the current parent
+        this.removeBlock(block)
+
+        newBlock = newBlock.listItemType === 'task' ? newBlock.children[1] : newBlock.children[0]
+      } else {
+        // We have reached end of indent level, so we should exit the list
+        newBlock = this.createBlockP()
+        this.insertAfter(newBlock, parent)
+        // Any sublists it has should be added after the new paragraph
         block.children.forEach((child) => {
           if (child.type === 'ul') this.insertAfter(child, newBlock)
         })
+        this.removeBlock(block)
       }
-    } else if (parent && parent.type === 'li') {
-      if (parent.listItemType === 'task') {
-        const { checked } = parent.children[0]
-        newBlock = this.createTaskItemBlock(null, checked)
-      } else {
-        newBlock = this.createBlockLi()
-        newBlock.listItemType = parent.listItemType
-        newBlock.bulletMarkerOrDelimiter = parent.bulletMarkerOrDelimiter
+      // If the parent list is now empty, we also need to remove it
+      if (parent.children.length === 0) {
+        this.removeBlock(parent)
       }
-      newBlock.isLooseListItem = parent.isLooseListItem
-      this.insertAfter(newBlock, parent)
-      const index = this.findIndex(parent.children, block)
-      const blocksInListItem = parent.children.splice(index + 1)
-      blocksInListItem.forEach((b) => this.appendChild(newBlock, b))
-      this.removeBlock(block)
-
-      newBlock = newBlock.listItemType === 'task' ? newBlock.children[1] : newBlock.children[0]
     } else {
       newBlock = this.createBlockP()
       if (block.type === 'li') {

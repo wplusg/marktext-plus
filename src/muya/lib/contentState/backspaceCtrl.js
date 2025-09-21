@@ -496,109 +496,74 @@ const backspaceCtrl = (ContentState) => {
         case 'STOP': // Cursor at begin of article and nothing need to do
           break
         case 'LI': {
-          if (inlineDegrade.info === 'REPLACEMENT') {
-            const children = parent.children
-            const grandpa = this.getBlock(parent.parent)
-            if (children[0].type === 'input') {
-              this.removeBlock(children[0])
-            }
+          // Note: The current block is the 'p' item, not the 'li' item
+          block = this.getParent(block) // let's get the 'li' item instead
+          parent = this.getBlock(block.parent) // parent is the 'ul' item
 
-            const greatGrandpaBlock = this.getBlock(grandpa.parent)
-            if (greatGrandpaBlock && greatGrandpaBlock.type === 'li') {
-              let previousLength = 0
-              if (greatGrandpaBlock.listItemType === 'task') {
-                previousLength = greatGrandpaBlock.children[1].children[0].text.length
-                greatGrandpaBlock.children[1].children[0].text += children[0].children[0].text
-                key = greatGrandpaBlock.children[1].key
-              } else {
-                previousLength = greatGrandpaBlock.children[0].children[0].text.length
-                greatGrandpaBlock.children[0].children[0].text += children[0].children[0].text
-                key = greatGrandpaBlock.children[0].key
-              }
+          let newBlock
 
-              // Set offset for cursor to the previous list item
-              // key will be set depending on the type
-              offset = previousLength
-
-              for (let i = 1; i < children.length; i++) {
-                this.appendChild(greatGrandpaBlock, children[i])
-              }
+          const grandpa = this.getParent(parent)
+          const greatGrandpaBlock = this.getParent(grandpa)
+          if (greatGrandpaBlock && greatGrandpaBlock.type === 'ul') {
+            if (block.listItemType === 'task') {
+              const { checked } = parent.children[0]
+              newBlock = this.createTaskItemBlock(null, checked)
+              newBlock.children[1].children[0].text += block.children[1].children[0].text
+              key = newBlock.children[1].key
             } else {
-              children.forEach((child) => {
-                this.insertBefore(child, grandpa)
-              })
+              newBlock = this.createBlockLi()
+              newBlock.listItemType = parent.listItemType
+              newBlock.bulletMarkerOrDelimiter = parent.bulletMarkerOrDelimiter
+              newBlock.children[0].children[0].text += block.children[0].children[0].text
+              key = newBlock.children[0].key
             }
+            // Insert the new list item after the grandparent (the parent list item of the current list)
+            this.insertAfter(newBlock, grandpa)
 
-            this.removeBlock(grandpa)
-          } else if (inlineDegrade.info === 'REMOVE_INSERT_BEFORE') {
-            const children = parent.children
-            const grandpa = this.getBlock(parent.parent)
-            if (children[0].type === 'input') {
-              this.removeBlock(children[0])
+            block.children.forEach((child) => {
+              if (child.type === 'ul') this.appendChild(newBlock, child)
+            })
+            if (block.nextSibling) {
+              // Also append all the nextSibilings of the current list item to a ul
+              // under the newBlock
+              const newULBlock = this.createBlock('ul')
+              this.appendChild(newBlock, newULBlock)
+              let probe = this.getBlock(block.nextSibling)
+              const addedChildKeys = []
+              while (probe) {
+                const nextSibilingSaved = probe.nextSibling // save it before we overwrite it by appending it
+                this.appendChild(newULBlock, probe)
+                addedChildKeys.push(probe.key)
+                probe = this.getBlock(nextSibilingSaved)
+              }
+              // Remove all the added siblings from the current parent
+              parent.children = parent.children.filter(
+                (child) => !addedChildKeys.includes(child.key)
+              )
             }
-
-            const greatGrandpaBlock = this.getBlock(grandpa.parent)
-            if (greatGrandpaBlock && greatGrandpaBlock.type === 'li') {
-              let previousLength = 0
-              if (greatGrandpaBlock.listItemType === 'task') {
-                previousLength = greatGrandpaBlock.children[1].children[0].text.length
-                greatGrandpaBlock.children[1].children[0].text += children[0].children[0].text
-                key = greatGrandpaBlock.children[1].key
-              } else {
-                previousLength = greatGrandpaBlock.children[0].children[0].text.length
-                greatGrandpaBlock.children[0].children[0].text += children[0].children[0].text
-                key = greatGrandpaBlock.children[0].key
-              }
-
-              // Set offset for cursor to the previous list item
-              // key will be set depending on the type
-              offset = previousLength
-
-              for (let i = 1; i < children.length; i++) {
-                this.appendChild(greatGrandpaBlock, children[i])
-              }
+            // Remove list item from the current parent
+            this.removeBlock(block)
+          } else {
+            // We have reached end of indent level, so we should exit the list
+            newBlock = this.createBlockP()
+            if (block.listItemType === 'task') {
+              newBlock.children[0].text += block.children[1].children[0].text
             } else {
-              children.forEach((child) => {
-                this.insertBefore(child, grandpa)
-              })
+              newBlock.children[0].text += block.children[0].children[0].text
             }
-
-            this.removeBlock(parent)
-          } else if (inlineDegrade.info === 'INSERT_PRE_LIST_ITEM') {
-            const parPre = this.getBlock(parent.preSibling)
-            const children = parent.children
-            if (children[0].type === 'input') {
-              this.removeBlock(children[0])
-            }
-
-            // Insert the text of the current list item to the previous list item.
-            if (children[0].type === 'p') {
-              let previousLength = 0
-              if (parPre.listItemType === 'task') {
-                previousLength = parPre.children[1].children[0].text.length
-                parPre.children[1].children[0].text += children[0].children[0].text
-                key = parPre.children[1].key
-              } else {
-                previousLength = parPre.children[0].children[0].text.length
-                parPre.children[0].children[0].text += children[0].children[0].text
-                key = parPre.children[0].key
-              }
-
-              // Set offset for cursor to the previous list item
-              // key will be set depending on the type
-              offset = previousLength
-
-              for (let i = 1; i < children.length; i++) {
-                this.appendChild(parPre, children[i])
-              }
-            } else {
-              children.forEach((child) => {
-                this.appendChild(parPre, child)
-              })
-            }
-
+            key = newBlock.children[0].key
+            this.insertAfter(newBlock, parent)
+            // Any sublists it has should be added after the new paragraph
+            block.children.forEach((child) => {
+              if (child.type === 'ul') this.insertAfter(child, newBlock)
+            })
+            this.removeBlock(block)
+          }
+          // If the parent list is now empty, we also need to remove it
+          if (parent.children.length === 0) {
             this.removeBlock(parent)
           }
+
           break
         }
         case 'BLOCKQUOTE':
