@@ -3,7 +3,7 @@
 <h1 align="center">MarkText</h1>
 <div align="center">
   Translations also available in:
-  <a href="docs/i18n/README-zh_cn.md">CN </a>
+  <a href="docs/i18n/README-zh_cn.md">CN</a>
   <a href="docs/i18n/README-zh_tw.md">TW</a>
   <a href="docs/i18n/README-de.md">DE</a>
   <a href="docs/i18n/README-es.md">ES</a>
@@ -12,6 +12,8 @@
   <a href="docs/i18n/README-kr.md">KR</a>
   <a href="docs/i18n/README-pt.md">PT</a>
 </div>
+
+---
 
 <div align="center">
   <strong>🔆 Next generation markdown editor 🌙</strong><br>
