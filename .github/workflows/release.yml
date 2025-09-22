@@ -44,11 +44,6 @@ jobs:
         run: |
           echo "CXXFLAGS=-std=gnu++20 -stdlib=libc++" >> $GITHUB_ENV
 
-      - name: Use GCC with C++20 (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          echo "CXXFLAGS=-std=gnu++20" >> $GITHUB_ENV
-
       - name: Rebuild native modules for Electron (MacOS + Windows)
         if: matrix.os != 'ubuntu-latest'
         run: npx @electron/rebuild -f
@@ -57,7 +52,7 @@ jobs:
 
       - name: Rebuild native modules for Electron (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
-        run: CXX=g++-13 CC=gcc-13 npx @electron/rebuild -f
+        run: CC=gcc-13 CXX=g++-13 CXXFLAGS='-std=gnu++20' USE_ELECTRON_CLANG=0 npm_config_clang=0 npx @electron/rebuild -f
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
