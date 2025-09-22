@@ -85,15 +85,12 @@ const handleMoreClick = () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   // Delay load native library because it's not needed for the editor and causes a delay.
-  const fontManager = require('fontmanager-redux')
-  const { onlyMonospace } = props
-  const buf = fontManager
-    .getAvailableFontsSync()
-    .filter((f) => f.family && (!onlyMonospace || (onlyMonospace && f.monospace)))
-    .map((f) => f.family)
-  fontFamilies.value = [...new Set(buf)].sort((a, b) => a.localeCompare(b))
+  const { getFonts } = require('font-list')
+
+  const fonts = await getFonts()
+  fontFamilies.value = fonts.map((f) => f.replace(/\"/g, '').trim())
 })
 </script>
 

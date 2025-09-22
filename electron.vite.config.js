@@ -76,18 +76,6 @@ export default defineConfig({
           })
         ]
       }
-    },
-    optimizeDeps: {
-      // We need to externalise fontmanager-redux as it is not a browser compatible module
-      // electron-vite will throw an error during the optimisation step when it tries to optimise it
-      exclude: ['fontmanager-redux']
-    },
-    build: {
-      rollupOptions: {
-        // This is technically not required since rollUp by default does not bundle require() calls
-        // But just in case there are any changes in the future
-        external: ['fontmanager-redux']
-      }
     }
   }
 })
