@@ -37,14 +37,14 @@
 
 ## Windows
 
-- 只需查看[发布页]下载(https://github.com/Tkaixiang/marktext/releases)!
+- 只需查看[发布页](https://github.com/Tkaixiang/marktext/releases)下载!
 
 - 已测试：
   - `Windows 11`
 
 ## Linux
 
-- 只需查看[发布页]下载(https://github.com/Tkaixiang/marktext/releases)
+- 只需查看[发布页](https://github.com/Tkaixiang/marktext/releases)下载！
 - 已测试：
   - `Ubuntu 24.0.2`（`AppImage` 与 `.deb` 包）
   - _非常希望有人协助测试其他 Linux 打包形式！_
