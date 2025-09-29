@@ -73,9 +73,9 @@ function getTranslation(key, language = 'en', params = {}) {
     return key // If the final value is not a string, return the key
   }
 
-  // Parameter substitutions, for example "My name is: {{name}}"
+  // Parameter substitutions, for example "My name is: {name}"
   for (const [param, replacement] of Object.entries(params)) {
-    probe = probe.replace(new RegExp(`\\{\\{${param}\\}\\}`, 'g'), replacement)
+    probe = probe.replace(new RegExp(`\\{${param}\\}`, 'g'), replacement)
   }
 
   return probe
