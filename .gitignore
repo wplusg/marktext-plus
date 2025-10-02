@@ -11,3 +11,4 @@ doc/
 # Ignore temp artifacts
 temp/
 logs/
+*.min.json
