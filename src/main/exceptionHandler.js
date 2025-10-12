@@ -79,6 +79,8 @@ ${title}.
 
 ### Minimal Reprouducible Markdown Example (or Steps)
 
+<Add steps or a markdown example to reproduce the problem.>
+
 ### Stack Trace
 
 \`\`\`\n${stack}\n\`\`\`
