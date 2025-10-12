@@ -133,7 +133,6 @@ const copyCutCtrl = (ContentState) => {
         'src',
         finalSrc
           .replace('file://', '') // We should not include file:// in the copied image path since markdown should not have the protocol specified
-          .replace(/\\/g, '/') // Normalise windows path to use "/"
           .replace(/\?msec=\d+/, '') // We also want to remove the "msec" query parameter used for cache busting
       )
     }

@@ -276,9 +276,10 @@ export const getImageInfo = (src, baseUrl = window.DIRNAME) => {
       }
     } else {
       // Correct relative path on desktop. If we resolve a absolute path "path.resolve" doesn't do anything.
+      // NOTE: We don't need to convert Windows styled path to UNIX style because Chromium handels this internal.
       return {
         isUnknownType: false,
-        src: 'file:///' + path.resolve(baseUrl, src).replace(/\\/g, '/') // Convert Windows path to standard URL paths as well
+        src: 'file://' + path.resolve(baseUrl, src)
       }
     }
   } else if (isUrl && !imageExtension) {
