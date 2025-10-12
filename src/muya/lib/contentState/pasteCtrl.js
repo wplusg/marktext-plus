@@ -358,12 +358,15 @@ const pasteCtrl = (ContentState) => {
     }
 
     if (startBlock.type === 'span' && startBlock.functionType === 'codeContent') {
+      const cleanedText = text.replace(/\r\n/g, '\n')
+      // CodeMirror normalises \r\n to \n, so if we count \r\n as two characters,
+      // the cursor position will be wrong after pasting.
       const blockText = startBlock.text
       const prePartText = blockText.substring(0, start.offset)
       const postPartText = blockText.substring(end.offset)
-      startBlock.text = prePartText + text + postPartText
+      startBlock.text = prePartText + cleanedText + postPartText
       const { key } = startBlock
-      const offset = start.offset + text.length
+      const offset = start.offset + cleanedText.length
       this.cursor = {
         start: { key, offset },
         end: { key, offset }

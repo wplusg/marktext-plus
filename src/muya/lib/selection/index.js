@@ -369,6 +369,7 @@ class Selection {
   select(startNode, startOffset, endNode, endOffset) {
     const range = this.doc.createRange()
     range.setStart(startNode, startOffset)
+
     if (endNode) {
       range.setEnd(endNode, endOffset)
     } else {
