@@ -495,6 +495,7 @@ const backspaceCtrl = (ContentState) => {
       switch (inlineDegrade.type) {
         case 'STOP': // Cursor at begin of article and nothing need to do
           break
+        case 'OL':
         case 'LI': {
           // Note: The current block is the 'p' item, not the 'li' item
           block = this.getParent(block) // let's get the 'li' item instead
@@ -509,7 +510,10 @@ const backspaceCtrl = (ContentState) => {
           console.log('grandParent', grandpa)
           console.log('greatGrandParent', greatGrandpaBlock)
           console.log('newBlock', newBlock)
-          if (greatGrandpaBlock && greatGrandpaBlock.type === 'ul') {
+          if (
+            greatGrandpaBlock &&
+            (greatGrandpaBlock.type === 'ul' || greatGrandpaBlock.type === 'ol')
+          ) {
             if (block.listItemType === 'task') {
               const { checked } = parent.children[0]
               newBlock = this.createTaskItemBlock(null, checked)
@@ -526,12 +530,13 @@ const backspaceCtrl = (ContentState) => {
             this.insertAfter(newBlock, grandpa)
 
             block.children.forEach((child) => {
-              if (child.type === 'ul') this.appendChild(newBlock, child)
+              if (child.type === 'ul' || child.type === 'ol') this.appendChild(newBlock, child)
             })
             if (block.nextSibling) {
               // Also append all the nextSibilings of the current list item to a ul
               // under the newBlock
-              const newULBlock = this.createBlock('ul')
+              const newULBlock =
+                parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
 
               let probe = this.getBlock(block.nextSibling)
               const addedChildKeys = []
@@ -563,14 +568,15 @@ const backspaceCtrl = (ContentState) => {
             this.insertAfter(newBlock, parent)
             // Any sublists it has should be added after the new paragraph
             block.children.forEach((child) => {
-              if (child.type === 'ul') this.insertAfter(child, newBlock)
+              if (child.type === 'ul' || child.type === 'ol') this.insertAfter(child, newBlock)
             })
             // Also append all the nextSibilings of the current list item to a ul
             // under the newBlock
             if (block.nextSibling) {
               // Also append all the nextSibilings of the current list item to a ul
               // under the newBlock
-              const newULBlock = this.createBlock('ul')
+              const newULBlock =
+                parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
               let probe = this.getBlock(block.nextSibling)
               const addedChildKeys = []
               while (probe && probe.parent && probe.parent === parent.key) {

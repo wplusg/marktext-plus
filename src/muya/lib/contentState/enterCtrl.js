@@ -106,7 +106,7 @@ const enterCtrl = (ContentState) => {
     console.log('enterinEmptyParagraph')
 
     let newBlock = null
-    if (parent && /ol|blockquote/.test(parent.type)) {
+    if (parent && /blockquote/.test(parent.type)) {
       newBlock = this.createBlockP()
       if (this.isOnlyChild(block)) {
         this.insertAfter(newBlock, parent)
@@ -121,7 +121,7 @@ const enterCtrl = (ContentState) => {
       }
 
       this.removeBlock(block)
-    } else if (parent && parent.type === 'ul') {
+    } else if (parent && (parent.type === 'ul' || parent.type === 'ol')) {
       // Check if this is the last indent, then we should insert it into the grandparent (the root element) instead
       // This effectively exists the list
 
@@ -132,7 +132,7 @@ const enterCtrl = (ContentState) => {
       console.log('grandParent', grandParent)
       console.log('greatGrandParent', greatGrandParent)
 
-      if (greatGrandParent && greatGrandParent.type === 'ul') {
+      if (greatGrandParent && (greatGrandParent.type === 'ul' || greatGrandParent.type === 'ol')) {
         if (block.listItemType === 'task') {
           const { checked } = parent.children[0]
           newBlock = this.createTaskItemBlock(null, checked)
@@ -147,14 +147,12 @@ const enterCtrl = (ContentState) => {
         this.insertAfter(newBlock, grandParent)
 
         block.children.forEach((child) => {
-          if (child.type === 'ul') this.appendChild(newBlock, child)
+          if (child.type === 'ul' || child.type === 'ol') this.appendChild(newBlock, child)
         })
-        // Also append all the nextSibilings of the current list item to a ul
-        // under the newBlock
         if (block.nextSibling) {
-          // Also append all the nextSibilings of the current list item to a ul
+          // Also append all the nextSibilings of the current list item to a ul/ol
           // under the newBlock
-          const newULBlock = this.createBlock('ul')
+          const newULBlock = parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
 
           let probe = this.getBlock(block.nextSibling)
           const addedChildKeys = []
@@ -181,13 +179,13 @@ const enterCtrl = (ContentState) => {
         this.insertAfter(newBlock, parent)
         // Any sublists it has should be added after the new paragraph
         block.children.forEach((child) => {
-          if (child.type === 'ul') this.insertAfter(child, newBlock)
+          if (child.type === 'ul' || child.type === 'ol') this.insertAfter(child, newBlock)
         })
         // Any nextSibilings it has should be added after the new paragraph
         if (block.nextSibling) {
           // Also append all the nextSibilings of the current list item to a ul
-          // under the newBlock
-          const newULBlock = this.createBlock('ul')
+          // under a newBlock
+          const newULBlock = parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
           let probe = this.getBlock(block.nextSibling)
           const addedChildKeys = []
           while (probe && probe.parent && probe.parent === parent.key) {
