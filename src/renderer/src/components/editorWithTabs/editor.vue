@@ -894,9 +894,6 @@ const handleFileChange = ({
   blocks = undefined
 }) => {
   const { container } = editor.value
-  // Changing files, let's save the current file's blocks state
-  const save_blocks = editor.value.contentState.getBlocks()
-  editorStore.saveBlocks(save_blocks)
 
   if (editor.value) {
     if (history) {
@@ -1021,7 +1018,10 @@ onMounted(() => {
     })
   }
 
-  editor.value = new Muya(ele, options)
+  const muyaEditor = new Muya(ele, options)
+  window.muyaEditor = muyaEditor
+  editor.value = muyaEditor
+
   const { container } = editor.value
 
   // Listen for language changes and update Muya's translation function

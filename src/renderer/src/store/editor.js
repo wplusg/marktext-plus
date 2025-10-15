@@ -168,16 +168,16 @@ export const useEditorStore = defineStore('editor', {
 
       // Reload the editor if the tab is currently opened.
       if (pathname === currentFile.pathname) {
+        // save current state first
         this.currentFile = tab
-        const { id, cursor, history, scrollTop, blocks } = tab
+        const { id, cursor, history, scrollTop } = tab // Should not use blocks history as this is loaded from disk
         bus.emit('file-changed', {
           id,
           markdown,
           cursor,
           renderCursor: true,
           history,
-          scrollTop,
-          blocks
+          scrollTop
         })
       }
     },
@@ -1310,10 +1310,6 @@ export const useEditorStore = defineStore('editor', {
       window.electron.ipcRenderer.on('mt::spelling-show-switch-language', () => {
         bus.emit('open-command-spellchecker-switch-language')
       })
-    },
-
-    saveBlocks(blocks) {
-      this.currentFile.blocks = blocks
     }
   }
 })
