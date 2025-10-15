@@ -23,7 +23,6 @@ const props = defineProps({
   }
 })
 
-const { t } = useI18n()
 const editorStore = useEditorStore()
 const preferencesStore = usePreferencesStore()
 
@@ -49,6 +48,7 @@ watch(
 const getMarkdownAndCursor = (cm) => {
   let focus = cm.getCursor('head')
   let anchor = cm.getCursor('anchor')
+
   const markdown = cm.getValue()
   const convertToMuyaCursor = (cursor) => {
     const line = cm.getLine(cursor.line)
@@ -216,7 +216,11 @@ const listenChange = () => {
 onMounted(() => {
   const { id } = currentTab.value
   // reset currentTab scrollTop position because the codeMirror scroll position is completely different from the muya scroll position
+  // reset blocks as well because the blocks are only valid in muya
+  // reset cursor because this is a direct "key-cursor", not a muyaIndexCursor, which is {focus: number, anchor: number}
   currentTab.value.scrollTop = undefined
+  currentTab.value.blocks = undefined
+  currentTab.value.cursor = undefined
 
   const { markdown, muyaIndexCursor, textDirection } = props
   const container = sourceCodeContainer.value

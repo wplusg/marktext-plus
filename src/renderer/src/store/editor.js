@@ -984,16 +984,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     // Content change from realtime preview editor and source code editor
-    LISTEN_FOR_CONTENT_CHANGE({
-      id,
-      markdown,
-      wordCount,
-      cursor,
-      muyaIndexCursor,
-      history,
-      toc,
-      blocks
-    }) {
+    LISTEN_FOR_CONTENT_CHANGE({ id, markdown, wordCount, cursor, muyaIndexCursor, history, toc }) {
       const preferencesStore = usePreferencesStore()
       const { autoSave } = preferencesStore
       const {
@@ -1035,7 +1026,6 @@ export const useEditorStore = defineStore('editor', {
         this.listToc = toc
         this.toc = listToTree(toc)
       }
-      if (blocks) this.currentFile.blocks = blocks
 
       if (markdown !== oldMarkdown) {
         this.currentFile.isSaved = false
@@ -1320,6 +1310,10 @@ export const useEditorStore = defineStore('editor', {
       window.electron.ipcRenderer.on('mt::spelling-show-switch-language', () => {
         bus.emit('open-command-spellchecker-switch-language')
       })
+    },
+
+    saveBlocks(blocks) {
+      this.currentFile.blocks = blocks
     }
   }
 })

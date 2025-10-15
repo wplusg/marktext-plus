@@ -894,11 +894,15 @@ const handleFileChange = ({
   blocks = undefined
 }) => {
   const { container } = editor.value
+  // Changing files, let's save the current file's blocks state
+  const save_blocks = editor.value.contentState.getBlocks()
+  editorStore.saveBlocks(save_blocks)
 
   if (editor.value) {
     if (history) {
       editor.value.setHistory(history)
     }
+
     if (typeof newMarkdown === 'string') {
       editor.value.setMarkdown(newMarkdown, newCursor, renderCursor, muyaIndexCursor, blocks)
     } else if (newCursor) {
@@ -1071,9 +1075,7 @@ onMounted(() => {
 
   editor.value.on('change', (changes) => {
     // WORKAROUND: "id: 'muya',
-    editorStore.LISTEN_FOR_CONTENT_CHANGE(
-      Object.assign(changes, { id: 'muya', blocks: editor.value.contentState.getBlocks() })
-    )
+    editorStore.LISTEN_FOR_CONTENT_CHANGE(Object.assign(changes, { id: 'muya' }))
   })
 
   editor.value.on('scroll', (scroll) => {

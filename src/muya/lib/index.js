@@ -194,11 +194,11 @@ class Muya {
     blocks = undefined
   ) {
     let finalCursor = null
-    if (cursor) {
-      // We have a cursor (pointing to the exact block key) defined, we can use the saved this.blocks instead of re-parsing the markdown
+
+    if (blocks && cursor) {
+      // We have blocks and a cursor, so we can set the blocks and the cursor in the contentState.
       finalCursor = cursor
-      if (blocks) this.contentState.setBlocks(blocks)
-      else this.contentState.importMarkdown(markdown) // Fallback incase an error occurs and we lose the blocks state for whatever reason
+      this.contentState.setBlocks(blocks)
     } else if (muyaIndexCursor && muyaIndexCursor.anchor && muyaIndexCursor.focus) {
       // We do not have a cursor, but we have a muyaIndexCursor, which is not based on a block key.
       // We need to convert the muyaIndexCursor to a cursor, so we can set it in the contentState.
