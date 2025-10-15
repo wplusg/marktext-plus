@@ -65,7 +65,8 @@ const copyCutCtrl = (ContentState) => {
       }
     }
     const html = selection.getSelectionHtml()
-    const wrapper = document.createElement('div')
+    const virtualDoc = new DOMParser().parseFromString(html, 'text/html') // This ensures nothing is actually fetched when we do clean-up below
+    const wrapper = virtualDoc.createElement('div')
     wrapper.innerHTML = html
     const removedElements = wrapper.querySelectorAll(
       `.${CLASS_OR_ID.AG_TOOL_BAR},
@@ -111,12 +112,15 @@ const copyCutCtrl = (ContentState) => {
     const imageWrappers = wrapper.querySelectorAll('span.ag-inline-image')
     for (const imageWrapper of imageWrappers) {
       const dataRaw = imageWrapper.getAttribute('data-raw')
+      const image = imageWrapper.querySelector('img')
+
+      if (!image) continue // image wasn't loaded for whatever reason
       // 2 types of images:
       // Type 1: ![alt](src "title")
       const markdownSrcMatch = dataRaw.match(/!\[\]\((.*)\)/) // ![](<stuff here>)
       // Type 2: <img ... />
       let finalSrc = ''
-      const image = imageWrapper.querySelector('img')
+
       if (markdownSrcMatch && markdownSrcMatch.length >= 2) {
         finalSrc = markdownSrcMatch[1]
       } else {

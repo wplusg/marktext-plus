@@ -199,7 +199,6 @@ Renderer.prototype.link = function (href, title, text) {
 }
 
 Renderer.prototype.image = function (href, title, text) {
-  console.log('Renderer.prototype.image', href, title, text)
   if (!href) {
     return text
   }
