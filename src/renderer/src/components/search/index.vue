@@ -13,7 +13,7 @@
             v-model="searchValue"
             type="text"
             :placeholder="t('search.searchPlaceholder')"
-            @keyup="searchFn($event)"
+            @keyup="debouncedSearchFn($event)"
           />
           <div class="controls">
             <span class="search-result"
@@ -114,6 +114,7 @@ import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
 import { useEditorStore } from '@/store/editor'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { debounce } from 'underscore'
 
 const { t } = useI18n()
 
@@ -290,6 +291,8 @@ const searchFn = (event) => {
     }
   })
 }
+
+const debouncedSearchFn = debounce(searchFn, 150)
 
 const replace = (isSingle = true) => {
   bus.emit('replaceValue', {
