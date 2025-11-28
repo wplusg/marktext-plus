@@ -422,7 +422,7 @@
         "isGitlabCompatibilityEnabled": "Enable GitLab compatibility mode",
         "sequenceTheme": "Sequence diagram theme",
         "theme": "Select the theme used in MarkText",
-        "autoSwitchTheme": "Automatically adjust application theme according system",
+        "followSystemTheme": "Follow system theme (light/dark)",
         "customCss": "Custom CSS to apply to the current theme",
         "spellcheckerEnabled": "Whether spell checking is enabled",
         "spellcheckerNoUnderline": "Don't underline spelling mistakes",
@@ -795,27 +795,12 @@
     "theme": {
       "title": "Theme",
       "theme": "Theme",
-      "autoSwitchTheme": {
-        "title": "Auto switch theme",
-        "description": "Automatically switch theme based on system",
-        "followSystem": "Follow system",
-        "light": "Light",
-        "dark": "Dark"
-      },
-      "realTime": {
-        "title": "Real time",
-        "description": "Real time theme switching"
-      },
+      "followSystemTheme": "Follow system theme",
       "codeBlockTheme": {
         "title": "Code block theme",
         "description": "Theme for code blocks"
       },
       "customCss": "Custom CSS",
-      "autoSwitchOptions": {
-        "startup": "At startup",
-        "never": "Never"
-      },
-      "autoSwitch": "Auto switch theme",
       "importCustomThemes": "Import custom themes",
       "importTheme": "Import Theme",
       "openFolder": "Open Folder",

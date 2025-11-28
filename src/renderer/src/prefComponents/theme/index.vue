@@ -13,12 +13,11 @@
       </div>
     </section>
     <separator></separator>
-    <cur-select
-      :description="t('preferences.theme.autoSwitch')"
-      :value="autoSwitchTheme"
-      :options="getAutoSwitchThemeOptions()"
-      :on-change="(value) => onSelectChange('autoSwitchTheme', value)"
-    ></cur-select>
+    <Bool
+      :description="t('preferences.theme.followSystemTheme')"
+      :bool="followSystemTheme"
+      :on-change="(value) => onSelectChange('followSystemTheme', value)"
+    />
     <div>
       <div style="font-size: smaller; color: var(--editorColor)">{{ t('preferences.theme.customCss') }}</div>
       <textarea
@@ -54,9 +53,9 @@ import { usePreferencesStore } from '@/store/preferences'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import themeMd from './theme.md?raw'
-import { getAutoSwitchThemeOptions, themes as configThemes } from './config'
+import { themes as configThemes } from './config'
 import markdownToHtml from '@/util/markdownToHtml'
-import CurSelect from '../common/select'
+import Bool from '../common/bool'
 import Separator from '../common/separator'
 
 const themes = ref([])
@@ -64,7 +63,7 @@ const themes = ref([])
 const { t } = useI18n()
 const preferenceStore = usePreferencesStore()
 
-const { autoSwitchTheme, theme, customCss } = storeToRefs(preferenceStore)
+const { followSystemTheme, theme, customCss } = storeToRefs(preferenceStore)
 
 onMounted(async () => {
   const newThemes = []

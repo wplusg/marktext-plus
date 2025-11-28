@@ -423,7 +423,7 @@
         "isGitlabCompatibilityEnabled": "启用 GitLab 兼容模式",
         "sequenceTheme": "序列图主题",
         "theme": "选择 MarkText 中使用的主题",
-        "autoSwitchTheme": "根据系统自动调整应用程序主题",
+        "followSystemTheme": "跟随系统主题(浅色/深色)",
         "customCss": "应用到当前主题的自定义 CSS",
         "spellcheckerEnabled": "是否启用拼写检查",
         "spellcheckerNoUnderline": "不要为拼写错误添加下划线",
@@ -796,27 +796,12 @@
     "theme": {
       "title": "主题",
       "theme": "主题",
-      "autoSwitchTheme": {
-        "title": "自动切换主题",
-        "description": "根据系统自动切换主题",
-        "followSystem": "跟随系统",
-        "light": "浅色",
-        "dark": "深色"
-      },
-      "realTime": {
-        "title": "实时",
-        "description": "实时主题切换"
-      },
+      "followSystemTheme": "跟随系统主题",
       "codeBlockTheme": {
         "title": "代码块主题",
         "description": "代码块的主题"
       },
       "customCss": "自定义 CSS",
-      "autoSwitchOptions": {
-        "startup": "启动时",
-        "never": "从不"
-      },
-      "autoSwitch": "自动切换主题",
       "importCustomThemes": "导入自定义主题",
       "importTheme": "导入主题",
       "openFolder": "打开文件夹",

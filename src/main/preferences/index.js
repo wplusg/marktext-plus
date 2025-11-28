@@ -100,6 +100,24 @@ class Preference extends EventEmitter {
           this.store.set(userSetting)
         }
       }
+
+      // Migrate old autoSwitchTheme to new followSystemTheme
+      if ('autoSwitchTheme' in userSetting && !('followSystemTheme' in userSetting)) {
+        // Convert old enum values to new boolean
+        // autoSwitchTheme: 0 = "at startup" → followSystemTheme: true
+        // autoSwitchTheme: 2 = "never" → followSystemTheme: false
+        const oldValue = userSetting.autoSwitchTheme
+        userSetting.followSystemTheme = userSetting.autoSwitchTheme === 0
+
+        // Remove old setting
+        delete userSetting.autoSwitchTheme
+        this.store.delete('autoSwitchTheme')
+
+        log.info(`Migrated autoSwitchTheme (${oldValue}) to followSystemTheme (${userSetting.followSystemTheme})`)
+
+        // Save the updated setting
+        this.store.set('followSystemTheme', userSetting.followSystemTheme)
+      }
     }
 
     this._listenForIpcMain()

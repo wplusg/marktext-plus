@@ -209,7 +209,7 @@ class App {
       }
     }
 
-    const { startUpAction, defaultDirectoryToOpen, autoSwitchTheme, theme } = preferences.getAll()
+    const { startUpAction, defaultDirectoryToOpen, followSystemTheme, theme } = preferences.getAll()
 
     if (startUpAction === 'folder' && defaultDirectoryToOpen) {
       const info = normalizeMarkdownPath(defaultDirectoryToOpen)
@@ -218,26 +218,44 @@ class App {
       }
     }
 
-    // Set initial native theme for theme in preferences.
+    // Configure native theme to follow system preferences
+    // Setting themeSource to 'system' allows Electron to track system theme changes
+    nativeTheme.themeSource = 'system'
+
+    // Apply theme at startup if "Follow system theme" is enabled
     const isDarkTheme = /dark/i.test(theme)
-    if (autoSwitchTheme === 0 && isDarkTheme !== nativeTheme.shouldUseDarkColors) {
-      selectTheme(nativeTheme.shouldUseDarkColors ? 'dark' : 'light')
-      nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
-    } else {
-      nativeTheme.themeSource = isDarkTheme ? 'dark' : 'light'
+    const systemIsDark = nativeTheme.shouldUseDarkColors
+
+    if (followSystemTheme && isDarkTheme !== systemIsDark) {
+      const newTheme = systemIsDark ? 'dark' : 'light'
+      log.info(`Following system theme at startup: ${newTheme}`)
+      selectTheme(newTheme)
     }
 
-    let isDarkMode = nativeTheme.shouldUseDarkColors
+    let isDarkMode = systemIsDark
+
     ipcMain.on('broadcast-preferences-changed', (change) => {
-      // Set Chromium's color for native elements after theme change.
+      // Update dark mode tracking when theme preference changes
       if (change.theme) {
-        const isDarkTheme = /dark/i.test(change.theme)
-        if (isDarkMode !== isDarkTheme) {
-          isDarkMode = isDarkTheme
-          nativeTheme.themeSource = isDarkTheme ? 'dark' : 'light'
-        } else if (nativeTheme.themeSource === 'system') {
-          // Need to set dark or light theme because we set `system` to get the current system theme.
-          nativeTheme.themeSource = isDarkMode ? 'dark' : 'light'
+        const newIsDark = /dark/i.test(change.theme)
+        isDarkMode = newIsDark
+      }
+    })
+
+    // Listen for system theme changes and auto-switch if enabled
+    nativeTheme.on('updated', () => {
+      const { followSystemTheme } = preferences.getAll()
+
+      if (followSystemTheme) {
+        const systemIsDark = nativeTheme.shouldUseDarkColors
+        const currentTheme = preferences.getItem('theme')
+        const currentIsDark = /dark/i.test(currentTheme)
+
+        if (systemIsDark !== currentIsDark) {
+          const newTheme = systemIsDark ? 'dark' : 'light'
+          log.info(`System theme changed, following system: ${newTheme}`)
+          selectTheme(newTheme)
+          isDarkMode = systemIsDark
         }
       }
     })

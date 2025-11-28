@@ -423,7 +423,7 @@
         "isGitlabCompatibilityEnabled": "啟用 GitLab 相容模式",
         "sequenceTheme": "序列圖主題",
         "theme": "選擇 MarkText 中使用的主題",
-        "autoSwitchTheme": "根據系統自動調整應用程式主題",
+        "followSystemTheme": "跟隨系統主題(淺色/深色)",
         "customCss": "套用到當前主題的自訂 CSS",
         "spellcheckerEnabled": "是否啟用拼字檢查",
         "spellcheckerNoUnderline": "不要為拼字錯誤加上底線",
@@ -797,27 +797,12 @@
     "theme": {
       "title": "主題",
       "theme": "主題",
-      "autoSwitchTheme": {
-        "title": "自動切換主題",
-        "description": "根據系統自動切換主題",
-        "followSystem": "跟隨系統",
-        "light": "淺色",
-        "dark": "深色"
-      },
-      "realTime": {
-        "title": "即時",
-        "description": "即時主題切換"
-      },
+      "followSystemTheme": "跟隨系統主題",
       "codeBlockTheme": {
         "title": "程式碼區塊主題",
         "description": "程式碼區塊的主題"
       },
       "customCss": "自訂 CSS",
-      "autoSwitchOptions": {
-        "startup": "啟動時",
-        "never": "永不"
-      },
-      "autoSwitch": "自動切換主題",
       "importCustomThemes": "匯入自訂主題",
       "importTheme": "匯入主題",
       "openFolder": "開啟資料夾",
