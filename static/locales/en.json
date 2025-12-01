@@ -422,7 +422,9 @@
         "isGitlabCompatibilityEnabled": "Enable GitLab compatibility mode",
         "sequenceTheme": "Sequence diagram theme",
         "theme": "Select the theme used in MarkText",
-        "followSystemTheme": "Follow system theme (light/dark)",
+        "followSystemTheme": "Use separate theme in dark mode",
+        "lightModeTheme": "Theme to use when system is in light mode",
+        "darkModeTheme": "Theme to use when system is in dark mode",
         "customCss": "Custom CSS to apply to the current theme",
         "spellcheckerEnabled": "Whether spell checking is enabled",
         "spellcheckerNoUnderline": "Don't underline spelling mistakes",
@@ -795,7 +797,11 @@
     "theme": {
       "title": "Theme",
       "theme": "Theme",
-      "followSystemTheme": "Follow system theme",
+      "followSystemTheme": "Use separate theme in dark mode",
+      "modeThemes": "Theme Selection",
+      "lightModeTheme": "Light mode theme",
+      "darkModeTheme": "Dark mode theme",
+      "customCss": "Custom CSS",
       "codeBlockTheme": {
         "title": "Code block theme",
         "description": "Theme for code blocks"

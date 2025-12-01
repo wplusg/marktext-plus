@@ -209,7 +209,7 @@ class App {
       }
     }
 
-    const { startUpAction, defaultDirectoryToOpen, followSystemTheme, theme } = preferences.getAll()
+    const { startUpAction, defaultDirectoryToOpen, followSystemTheme, lightModeTheme, darkModeTheme, theme } = preferences.getAll()
 
     if (startUpAction === 'folder' && defaultDirectoryToOpen) {
       const info = normalizeMarkdownPath(defaultDirectoryToOpen)
@@ -227,8 +227,8 @@ class App {
     const systemIsDark = nativeTheme.shouldUseDarkColors
 
     if (followSystemTheme && isDarkTheme !== systemIsDark) {
-      const newTheme = systemIsDark ? 'dark' : 'light'
-      log.info(`Following system theme at startup: ${newTheme}`)
+      const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
+      log.info(`Following system theme at startup: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
       selectTheme(newTheme)
     }
 
@@ -244,32 +244,52 @@ class App {
       // When followSystemTheme is enabled, immediately switch to match system
       if (change.followSystemTheme === true) {
         const systemIsDark = nativeTheme.shouldUseDarkColors
-        const currentTheme = preferences.getItem('theme')
-        const currentIsDark = /dark/i.test(currentTheme)
+        const { lightModeTheme, darkModeTheme } = preferences.getAll()
+        const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
 
-        if (systemIsDark !== currentIsDark) {
-          const newTheme = systemIsDark ? 'dark' : 'light'
-          log.info(`followSystemTheme enabled, switching to match system: ${newTheme}`)
-          selectTheme(newTheme)
-          preferences.setItem('theme', newTheme)
-          isDarkMode = systemIsDark
+        log.info(`followSystemTheme enabled, switching to: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
+        selectTheme(newTheme)
+        preferences.setItem('theme', newTheme)
+        isDarkMode = systemIsDark
+      }
+      // When light/dark mode theme preferences change, apply immediately if following system
+      if ((change.lightModeTheme || change.darkModeTheme) && preferences.getItem('followSystemTheme')) {
+        const systemIsDark = nativeTheme.shouldUseDarkColors
+
+        // Get current values, but prefer the NEW values from the change event
+        let { lightModeTheme, darkModeTheme } = preferences.getAll()
+
+        // If these preferences were just changed, use the new values from the change object
+        if (change.lightModeTheme !== undefined) {
+          lightModeTheme = change.lightModeTheme
         }
+        if (change.darkModeTheme !== undefined) {
+          darkModeTheme = change.darkModeTheme
+        }
+
+        const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
+
+        log.info(`Theme preference changed, applying: ${newTheme}`)
+        selectTheme(newTheme)
+        preferences.setItem('theme', newTheme)
+        isDarkMode = systemIsDark
       }
     })
 
     // Listen for system theme changes and auto-switch if enabled
     nativeTheme.on('updated', () => {
-      const { followSystemTheme } = preferences.getAll()
+      const { followSystemTheme, lightModeTheme, darkModeTheme } = preferences.getAll()
 
       if (followSystemTheme) {
         const systemIsDark = nativeTheme.shouldUseDarkColors
+        const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
         const currentTheme = preferences.getItem('theme')
-        const currentIsDark = /dark/i.test(currentTheme)
 
-        if (systemIsDark !== currentIsDark) {
-          const newTheme = systemIsDark ? 'dark' : 'light'
-          log.info(`System theme changed, following system: ${newTheme}`)
+        // Only switch if the theme actually needs to change
+        if (newTheme !== currentTheme) {
+          log.info(`System theme changed, switching to: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
           selectTheme(newTheme)
+          preferences.setItem('theme', newTheme)
           isDarkMode = systemIsDark
         }
       }

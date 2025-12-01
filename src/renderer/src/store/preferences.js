@@ -58,6 +58,8 @@ export const usePreferencesStore = defineStore('preferences', {
 
     theme: 'light',
     followSystemTheme: false,
+    lightModeTheme: 'light',
+    darkModeTheme: 'dark',
     customCss: '',
 
     spellcheckerEnabled: false,

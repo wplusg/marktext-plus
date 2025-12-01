@@ -423,7 +423,9 @@
         "isGitlabCompatibilityEnabled": "Activer le mode de compatibilité GitLab",
         "sequenceTheme": "Thème du diagramme de séquence",
         "theme": "Sélectionner le thème utilisé dans MarkText",
-        "followSystemTheme": "Suivre le thème du système (clair/sombre)",
+        "followSystemTheme": "Utiliser un thème séparé en mode sombre",
+        "lightModeTheme": "Thème à utiliser lorsque le système est en mode clair",
+        "darkModeTheme": "Thème à utiliser lorsque le système est en mode sombre",
         "customCss": "CSS personnalisé à appliquer au thème actuel",
         "spellcheckerEnabled": "La vérification orthographique est-elle activée",
         "spellcheckerNoUnderline": "Ne pas souligner les erreurs d'orthographe",
@@ -797,12 +799,15 @@
     "theme": {
       "title": "Thème",
       "theme": "Thème",
-      "followSystemTheme": "Suivre le thème du système",
+      "followSystemTheme": "Utiliser un thème séparé en mode sombre",
+      "modeThemes": "Sélection du thème",
+      "lightModeTheme": "Thème en mode clair",
+      "darkModeTheme": "Thème en mode sombre",
+      "customCss": "CSS personnalisé",
       "codeBlockTheme": {
         "title": "Thème de bloc de code",
         "description": "Thème pour les blocs de code"
       },
-      "customCss": "CSS personnalisé",
       "importCustomThemes": "Importer des thèmes personnalisés",
       "importTheme": "Importer un thème",
       "openFolder": "Ouvrir le dossier",

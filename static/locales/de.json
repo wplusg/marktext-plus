@@ -422,7 +422,9 @@
         "isGitlabCompatibilityEnabled": "GitLab-Kompatibilitätsmodus aktivieren",
         "sequenceTheme": "Sequenzdiagramm-Theme",
         "theme": "Das in MarkText verwendete Theme auswählen",
-        "followSystemTheme": "System-Theme folgen (hell/dunkel)",
+        "followSystemTheme": "Separates Design im Dunkelmodus verwenden",
+        "lightModeTheme": "Design, das verwendet werden soll, wenn sich das System im hellen Modus befindet",
+        "darkModeTheme": "Design, das verwendet werden soll, wenn sich das System im dunklen Modus befindet",
         "customCss": "Benutzerdefiniertes CSS für das aktuelle Theme",
         "spellcheckerEnabled": "Ob Rechtschreibprüfung aktiviert ist",
         "spellcheckerNoUnderline": "Rechtschreibfehler nicht unterstreichen",
@@ -795,12 +797,15 @@
     "theme": {
       "title": "Design",
       "theme": "Design",
-      "followSystemTheme": "System-Theme folgen",
+      "followSystemTheme": "Separates Design im Dunkelmodus verwenden",
+      "modeThemes": "Design-Auswahl",
+      "lightModeTheme": "Helles Modus-Design",
+      "darkModeTheme": "Dunkles Modus-Design",
+      "customCss": "Benutzerdefiniertes CSS",
       "codeBlockTheme": {
         "title": "Code-Block-Design",
         "description": "Design für Code-Blöcke"
       },
-      "customCss": "Benutzerdefiniertes CSS",
       "importCustomThemes": "Benutzerdefinierte Designs importieren",
       "importTheme": "Design importieren",
       "openFolder": "Ordner öffnen",

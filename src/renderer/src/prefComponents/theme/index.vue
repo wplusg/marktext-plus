@@ -6,18 +6,47 @@
         v-for="t of themes"
         :key="t.name"
         class="theme"
-        :class="[t.name, { active: t.name === theme }]"
-        @click="onSelectChange('theme', t.name)"
+        :class="[
+          t.name,
+          {
+            active: t.name === theme,
+            disabled: followSystemTheme
+          }
+        ]"
+        @click="!followSystemTheme && onSelectChange('theme', t.name)"
       >
         <div v-html="t.html"></div>
       </div>
     </section>
     <separator></separator>
+
     <Bool
       :description="t('preferences.theme.followSystemTheme')"
       :bool="followSystemTheme"
       :on-change="(value) => onSelectChange('followSystemTheme', value)"
     />
+
+    <compound v-if="followSystemTheme">
+      <template #head>
+        <h6 class="title">{{ t('preferences.theme.modeThemes') }}</h6>
+      </template>
+      <template #children>
+        <cur-select
+          :description="t('preferences.theme.lightModeTheme')"
+          :value="lightModeTheme"
+          :options="themeOptions"
+          :on-change="(value) => onSelectChange('lightModeTheme', value)"
+        ></cur-select>
+
+        <cur-select
+          :description="t('preferences.theme.darkModeTheme')"
+          :value="darkModeTheme"
+          :options="themeOptions"
+          :on-change="(value) => onSelectChange('darkModeTheme', value)"
+        ></cur-select>
+      </template>
+    </compound>
+
     <div>
       <div style="font-size: smaller; color: var(--editorColor)">{{ t('preferences.theme.customCss') }}</div>
       <textarea
@@ -56,14 +85,25 @@ import themeMd from './theme.md?raw'
 import { themes as configThemes } from './config'
 import markdownToHtml from '@/util/markdownToHtml'
 import Bool from '../common/bool'
+import CurSelect from '../common/select'
 import Separator from '../common/separator'
+import Compound from '../common/compound'
 
 const themes = ref([])
 
 const { t } = useI18n()
 const preferenceStore = usePreferencesStore()
 
-const { followSystemTheme, theme, customCss } = storeToRefs(preferenceStore)
+const { followSystemTheme, lightModeTheme, darkModeTheme, theme, customCss } = storeToRefs(preferenceStore)
+
+const themeOptions = [
+  { label: 'Light', value: 'light' },
+  { label: 'Dark', value: 'dark' },
+  { label: 'Material Dark', value: 'material-dark' },
+  { label: 'One Dark', value: 'one-dark' },
+  { label: 'Ulysses', value: 'ulysses' },
+  { label: 'Graphite', value: 'graphite' }
+]
 
 onMounted(async () => {
   const newThemes = []
@@ -99,6 +139,8 @@ const onSelectChange = (type, value) => {
     box-sizing: border-box;
     box-shadow: 0 9px 28px -9px rgba(0, 0, 0, 0.4);
     border-radius: 5px;
+    transition: opacity 0.2s ease;
+
     &.dark {
       color: rgba(255, 255, 255, 0.7);
       background: #282828;
@@ -141,9 +183,24 @@ const onSelectChange = (type, value) => {
         color: rgb(12, 139, 186);
       }
     }
-  }
-  & .theme.active {
-    box-shadow: var(--floatShadow);
+
+    /* Disabled state when followSystemTheme is on */
+    &.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Active theme - use outline instead of border to avoid layout shift? */
+    &.active {
+      box-shadow: var(--floatShadow);
+      outline: 2px solid var(--themeColor);
+      outline-offset: -2px;
+    }
+
+    /* Active + disabled: slightly more visible */
+    &.disabled.active {
+      opacity: 0.7;
+    }
   }
   & h3 {
     margin: 0;
@@ -166,6 +223,7 @@ const onSelectChange = (type, value) => {
     font-size: 12px;
   }
 }
+
 .import-themes {
   padding: 10px 0;
   display: flex;

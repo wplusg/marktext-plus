@@ -101,7 +101,7 @@ class Preference extends EventEmitter {
         }
       }
 
-      // Migrate old autoSwitchTheme to new followSystemTheme
+      // Migrate old autoSwitchTheme to new followSystemTheme with separate light/dark themes
       if ('autoSwitchTheme' in userSetting && !('followSystemTheme' in userSetting)) {
         // Convert old enum values to new boolean
         // autoSwitchTheme: 0 = "at startup" → followSystemTheme: true
@@ -109,14 +109,38 @@ class Preference extends EventEmitter {
         const oldValue = userSetting.autoSwitchTheme
         userSetting.followSystemTheme = userSetting.autoSwitchTheme === 0
 
+        // Set default theme preferences for light and dark modes
+        if (!('lightModeTheme' in userSetting)) {
+          userSetting.lightModeTheme = 'light'
+        }
+        if (!('darkModeTheme' in userSetting)) {
+          // If current theme is a dark theme, use it; otherwise default to 'dark'
+          const currentTheme = userSetting.theme || 'light'
+          const isDarkTheme = /dark/i.test(currentTheme)
+          userSetting.darkModeTheme = isDarkTheme ? currentTheme : 'dark'
+        }
+
         // Remove old setting
         delete userSetting.autoSwitchTheme
         this.store.delete('autoSwitchTheme')
 
         log.info(`Migrated autoSwitchTheme (${oldValue}) to followSystemTheme (${userSetting.followSystemTheme})`)
+        log.info(`  lightModeTheme: ${userSetting.lightModeTheme}, darkModeTheme: ${userSetting.darkModeTheme}`)
 
-        // Save the updated setting
+        // Save the updated settings
         this.store.set('followSystemTheme', userSetting.followSystemTheme)
+        this.store.set('lightModeTheme', userSetting.lightModeTheme)
+        this.store.set('darkModeTheme', userSetting.darkModeTheme)
+      }
+
+      // Add defaults for new users (users without autoSwitchTheme to migrate)
+      if (!('lightModeTheme' in userSetting)) {
+        userSetting.lightModeTheme = 'light'
+        this.store.set('lightModeTheme', 'light')
+      }
+      if (!('darkModeTheme' in userSetting)) {
+        userSetting.darkModeTheme = 'dark'
+        this.store.set('darkModeTheme', 'dark')
       }
     }
 
