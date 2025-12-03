@@ -806,7 +806,6 @@
         "title": "Code block theme",
         "description": "Theme for code blocks"
       },
-      "customCss": "Custom CSS",
       "importCustomThemes": "Import custom themes",
       "importTheme": "Import Theme",
       "openFolder": "Open Folder",
