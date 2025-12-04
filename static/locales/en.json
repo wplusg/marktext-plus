@@ -422,7 +422,7 @@
         "isGitlabCompatibilityEnabled": "Enable GitLab compatibility mode",
         "sequenceTheme": "Sequence diagram theme",
         "theme": "Select the theme used in MarkText",
-        "followSystemTheme": "Use separate theme in dark mode",
+        "followSystemTheme": "Follow System Theme",
         "lightModeTheme": "Theme to use when system is in light mode",
         "darkModeTheme": "Theme to use when system is in dark mode",
         "customCss": "Custom CSS to apply to the current theme",
@@ -797,7 +797,7 @@
     "theme": {
       "title": "Theme",
       "theme": "Theme",
-      "followSystemTheme": "Use separate theme in dark mode",
+      "followSystemTheme": "Follow System Theme",
       "modeThemes": "Theme Selection",
       "lightModeTheme": "Light mode theme",
       "darkModeTheme": "Dark mode theme",

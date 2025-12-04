@@ -423,7 +423,7 @@
         "isGitlabCompatibilityEnabled": "GitLab互換モードを有効にする",
         "sequenceTheme": "シーケンス図のテーマ",
         "theme": "MarkTextで使用するテーマを選択",
-        "followSystemTheme": "ダークモードで別のテーマを使用",
+        "followSystemTheme": "システムのテーマに従う",
         "lightModeTheme": "システムがライトモードの時に使用するテーマ",
         "darkModeTheme": "システムがダークモードの時に使用するテーマ",
         "customCss": "現在のテーマに適用するカスタムCSS",
@@ -799,7 +799,7 @@
     "theme": {
       "title": "テーマ",
       "theme": "テーマ",
-      "followSystemTheme": "ダークモードで別のテーマを使用",
+      "followSystemTheme": "システムのテーマに従う",
       "modeThemes": "テーマの選択",
       "lightModeTheme": "ライトモードのテーマ",
       "darkModeTheme": "ダークモードのテーマ",

@@ -423,7 +423,7 @@
         "isGitlabCompatibilityEnabled": "啟用 GitLab 相容模式",
         "sequenceTheme": "序列圖主題",
         "theme": "選擇 MarkText 中使用的主題",
-        "followSystemTheme": "在深色模式下使用單獨的主題",
+        "followSystemTheme": "跟隨系統主題",
         "lightModeTheme": "系統處於淺色模式時使用的主題",
         "darkModeTheme": "系統處於深色模式時使用的主題",
         "customCss": "套用到當前主題的自訂 CSS",
@@ -799,7 +799,7 @@
     "theme": {
       "title": "主題",
       "theme": "主題",
-      "followSystemTheme": "在深色模式下使用單獨的主題",
+      "followSystemTheme": "跟隨系統主題",
       "modeThemes": "主題選擇",
       "lightModeTheme": "淺色模式主題",
       "darkModeTheme": "深色模式主題",

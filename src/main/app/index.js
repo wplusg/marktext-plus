@@ -36,6 +36,8 @@ class App {
     // Initialize main process language
     this._initializeLanguage()
     this._listenForIpcMain()
+    // Initialize theme listener
+    this._themeListenerRegistered = false
   }
 
   /**
@@ -232,13 +234,10 @@ class App {
       selectTheme(newTheme)
     }
 
-    let isDarkMode = systemIsDark
-
     ipcMain.on('broadcast-preferences-changed', (change) => {
       // Update dark mode tracking when theme preference changes
       if (change.theme) {
         const newIsDark = /dark/i.test(change.theme)
-        isDarkMode = newIsDark
       }
 
       // When followSystemTheme is enabled, immediately switch to match system
@@ -250,10 +249,9 @@ class App {
         log.info(`followSystemTheme enabled, switching to: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
         selectTheme(newTheme)
         preferences.setItem('theme', newTheme)
-        isDarkMode = systemIsDark
       }
       // When light/dark mode theme preferences change, apply immediately if following system
-      if ((change.lightModeTheme || change.darkModeTheme) && preferences.getItem('followSystemTheme')) {
+      if (preferences.getItem('followSystemTheme') && (change.lightModeTheme || change.darkModeTheme)) {
         const systemIsDark = nativeTheme.shouldUseDarkColors
 
         // Get current values, but prefer the NEW values from the change event
@@ -272,28 +270,29 @@ class App {
         log.info(`Theme preference changed, applying: ${newTheme}`)
         selectTheme(newTheme)
         preferences.setItem('theme', newTheme)
-        isDarkMode = systemIsDark
       }
     })
 
     // Listen for system theme changes and auto-switch if enabled
-    nativeTheme.on('updated', () => {
-      const { followSystemTheme, lightModeTheme, darkModeTheme } = preferences.getAll()
+    if (!this._themeListenerRegistered) {
+      nativeTheme.on('updated', () => {
+        const { followSystemTheme, lightModeTheme, darkModeTheme } = preferences.getAll()
 
-      if (followSystemTheme) {
-        const systemIsDark = nativeTheme.shouldUseDarkColors
-        const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
-        const currentTheme = preferences.getItem('theme')
+        if (followSystemTheme) {
+          const systemIsDark = nativeTheme.shouldUseDarkColors
+          const newTheme = systemIsDark ? darkModeTheme : lightModeTheme
+          const currentTheme = preferences.getItem('theme')
 
-        // Only switch if the theme actually needs to change
-        if (newTheme !== currentTheme) {
-          log.info(`System theme changed, switching to: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
-          selectTheme(newTheme)
-          preferences.setItem('theme', newTheme)
-          isDarkMode = systemIsDark
+          // Only switch if the theme actually needs to change
+          if (newTheme !== currentTheme) {
+            log.info(`System theme changed, switching to: ${newTheme} (system ${systemIsDark ? 'dark' : 'light'})`)
+            selectTheme(newTheme)
+            preferences.setItem('theme', newTheme)
+          }
         }
-      }
-    })
+      })
+      this._themeListenerRegistered = true
+    }
 
     if (isOsx) {
       app.dock.setMenu(dockMenu)
@@ -319,37 +318,30 @@ class App {
       ])
     }
 
-    // If followSystemTheme=true, wait for nativeTheme to settle before creating windows.
-    // On some systems (especially Linux), shouldUseDarkColors may not immediately
-    // reflect the OS theme when themeSource is first set to 'system'.
-    // Waiting for the 'updated' event ensures windows are created with the
-    // correct background color, preventing a white flash on startup.
-    if (followSystemTheme) {
-      let windowCreated = false
-
-      const createWindow = () => {
-        if (windowCreated) return
-        windowCreated = true
-
-        if (_openFilesCache.length) {
-          this._openFilesToOpen()
-        } else {
-          this._createEditorWindow()
-        }
-      }
-
-      // Wait for 'updated' event (fires if theme changes)
-      nativeTheme.once('updated', createWindow)
-
-      // Fallback timeout in case 'updated' never fires (no theme change)
-      setTimeout(createWindow, 150)
-    } else {
-      // Not following system theme - create windows immediately
+    const createWindow = () => {
       if (_openFilesCache.length) {
         this._openFilesToOpen()
       } else {
         this._createEditorWindow()
       }
+    }
+
+    if (isLinux) {
+      let windowCreated = false
+
+      const createWindowOnce = () => {
+        if (windowCreated) return
+        windowCreated = true
+        createWindow()
+      }
+
+      // Wait for theme to settle (Linux-specific issue?)
+      nativeTheme.once('updated', createWindowOnce)
+      // Fallback timeout in case 'updated' never fires (no theme change)
+      setTimeout(createWindowOnce, 150)
+    } else {
+      // Create immediately on Windows/macOS
+      createWindow()
     }
 
     // this.shortcutCapture = new ShortcutCapture()

@@ -96,14 +96,13 @@ const preferenceStore = usePreferencesStore()
 
 const { followSystemTheme, lightModeTheme, darkModeTheme, theme, customCss } = storeToRefs(preferenceStore)
 
-const themeOptions = [
-  { label: 'Light', value: 'light' },
-  { label: 'Dark', value: 'dark' },
-  { label: 'Material Dark', value: 'material-dark' },
-  { label: 'One Dark', value: 'one-dark' },
-  { label: 'Ulysses', value: 'ulysses' },
-  { label: 'Graphite', value: 'graphite' }
-]
+// Generate dropdown options from configThemes
+const themeOptions = configThemes.map(theme => ({
+  label: theme.name.split('-').map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' '),
+  value: theme.name
+}))
 
 onMounted(async () => {
   const newThemes = []
