@@ -103,7 +103,6 @@ const enterCtrl = (ContentState) => {
   ContentState.prototype.enterInEmptyParagraph = function (block) {
     if (block.type === 'span') block = this.getParent(block)
     const parent = this.getParent(block)
-    console.log('enterinEmptyParagraph')
 
     let newBlock = null
     if (parent && /blockquote/.test(parent.type)) {
@@ -127,10 +126,6 @@ const enterCtrl = (ContentState) => {
 
       const grandParent = this.getParent(parent)
       const greatGrandParent = this.getParent(grandParent)
-      console.log('block', block)
-      console.log('parent', parent)
-      console.log('grandParent', grandParent)
-      console.log('greatGrandParent', greatGrandParent)
 
       if (greatGrandParent && (greatGrandParent.type === 'ul' || greatGrandParent.type === 'ol')) {
         if (block.listItemType === 'task') {
@@ -169,8 +164,7 @@ const enterCtrl = (ContentState) => {
           }
         }
         // Remove list item from the current parent
-        this.removeBlock(block)
-        console.log('newBlock', newBlock)
+        this.removeBlock(block, this.blocks, true)
 
         newBlock = newBlock.listItemType === 'task' ? newBlock.children[1] : newBlock.children[0]
       } else {
@@ -198,11 +192,9 @@ const enterCtrl = (ContentState) => {
             // Remove all the added siblings from the current parent
             parent.children = parent.children.filter((child) => !addedChildKeys.includes(child.key))
             this.insertAfter(newULBlock, newBlock)
-            console.log('newULBlock', newULBlock)
           }
         }
-        console.log('newBlock', newBlock)
-        this.removeBlock(block)
+        this.removeBlock(block, this.blocks, true)
       }
 
       // If the parent list is now empty, we also need to remove it

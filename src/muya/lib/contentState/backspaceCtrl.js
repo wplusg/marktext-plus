@@ -505,11 +505,11 @@ const backspaceCtrl = (ContentState) => {
 
           const grandpa = this.getParent(parent)
           const greatGrandpaBlock = this.getParent(grandpa)
-          console.log('block', block)
-          console.log('parent', parent)
-          console.log('grandParent', grandpa)
-          console.log('greatGrandParent', greatGrandpaBlock)
-          console.log('newBlock', newBlock)
+          // console.log('block', JSON.parse(JSON.stringify(block)))
+          // console.log('parent', JSON.parse(JSON.stringify(parent)))
+          // console.log('grandParent', JSON.parse(JSON.stringify(grandpa)))
+          // console.log('greatGrandParent', JSON.parse(JSON.stringify(greatGrandpaBlock)))
+          // console.log('newBlock', JSON.parse(JSON.stringify(newBlock)))
           if (
             greatGrandpaBlock &&
             (greatGrandpaBlock.type === 'ul' || greatGrandpaBlock.type === 'ol')
@@ -536,7 +536,13 @@ const backspaceCtrl = (ContentState) => {
               // Also append all the nextSibilings of the current list item to a ul
               // under the newBlock
               const newULBlock =
-                parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
+                parent.type === 'ul'
+                  ? this.createBlock('ul', {
+                      listType: 'bullet'
+                    })
+                  : this.createBlock('ol', {
+                      listType: 'order'
+                    })
 
               let probe = this.getBlock(block.nextSibling)
               const addedChildKeys = []
@@ -555,7 +561,7 @@ const backspaceCtrl = (ContentState) => {
               }
             }
             // Remove list item from the current parent
-            this.removeBlock(block)
+            this.removeBlock(block, this.blocks, true)
           } else {
             // We have reached end of indent level, so we should exit the list
             newBlock = this.createBlockP()
@@ -568,15 +574,21 @@ const backspaceCtrl = (ContentState) => {
             this.insertAfter(newBlock, parent)
             // Any sublists it has should be added after the new paragraph
             block.children.forEach((child) => {
-              if (child.type === 'ul' || child.type === 'ol') this.insertAfter(child, newBlock)
+              if (child.type === 'ul' || child.type === 'ol') {
+                this.insertAfter(child, newBlock)
+              }
             })
             // Also append all the nextSibilings of the current list item to a ul
             // under the newBlock
             if (block.nextSibling) {
-              // Also append all the nextSibilings of the current list item to a ul
-              // under the newBlock
               const newULBlock =
-                parent.type === 'ul' ? this.createBlock('ul') : this.createBlock('ol')
+                parent.type === 'ul'
+                  ? this.createBlock('ul', {
+                      listType: 'bullet'
+                    })
+                  : this.createBlock('ol', {
+                      listType: 'order'
+                    })
               let probe = this.getBlock(block.nextSibling)
               const addedChildKeys = []
               while (probe && probe.parent && probe.parent === parent.key) {
@@ -592,7 +604,6 @@ const backspaceCtrl = (ContentState) => {
                 )
                 this.insertAfter(newULBlock, newBlock)
               }
-              console.log('newULBlock backspace', newULBlock)
             }
             this.removeBlock(block)
           }

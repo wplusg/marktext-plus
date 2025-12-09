@@ -540,7 +540,13 @@ class ContentState {
     }
   }
 
-  removeBlock(block, fromBlocks = this.blocks) {
+  /**
+   * Remove a block from this.blocks or fromBlocks
+   * @param {*} block Block to be removed
+   * @param {*} fromBlocks Removes block from here if specified
+   * @param {*} breakLinkedList Default false. If true, sets nextSibling and preSibling of adjacent blocks to null
+   */
+  removeBlock(block, fromBlocks = this.blocks, breakLinkedList = false) {
     const remove = (blocks, block) => {
       const len = blocks.length
       let i
@@ -550,10 +556,10 @@ class ContentState {
           const nextSibling = this.getBlock(block.nextSibling)
 
           if (preSibling) {
-            preSibling.nextSibling = nextSibling ? nextSibling.key : null
+            preSibling.nextSibling = nextSibling && !breakLinkedList ? nextSibling.key : null
           }
           if (nextSibling) {
-            nextSibling.preSibling = preSibling ? preSibling.key : null
+            nextSibling.preSibling = preSibling && !breakLinkedList ? preSibling.key : null
           }
 
           return blocks.splice(i, 1)
