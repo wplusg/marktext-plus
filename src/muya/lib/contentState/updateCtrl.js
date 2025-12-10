@@ -15,7 +15,7 @@ const INLINE_UPDATE_FRAGMENTS = [
 
 const INLINE_UPDATE_REG = new RegExp(INLINE_UPDATE_FRAGMENTS.join('|'), 'i')
 
-const updateCtrl = ContentState => {
+const updateCtrl = (ContentState) => {
   ContentState.prototype.checkSameMarkerOrDelimiter = function (list, markerOrDelimiter) {
     if (!/ol|ul/.test(list.type)) return false
     return list.children[0].bulletMarkerOrDelimiter === markerOrDelimiter
@@ -50,9 +50,7 @@ const updateCtrl = ContentState => {
       if (NO_NEED_TOKEN_REG.test(token.type)) continue
       const { start, end } = token.range
       const textLen = endBlock.text.length
-      if (
-        conflict([Math.max(0, start - 1), Math.min(textLen, end + 1)], [endOffset, endOffset])
-      ) {
+      if (conflict([Math.max(0, start - 1), Math.min(textLen, end + 1)], [endOffset, endOffset])) {
         return true
       }
     }
@@ -80,23 +78,33 @@ const updateCtrl = ContentState => {
     }
     const listItem = this.getParent(block)
     const [
-      match, bullet, tasklist, order, atxHeader,
-      setextHeader, blockquote, indentCode, footnote, hr
+      match,
+      bullet,
+      tasklist,
+      order,
+      atxHeader,
+      setextHeader,
+      blockquote,
+      indentCode,
+      footnote,
+      hr
     ] = text.match(INLINE_UPDATE_REG) || []
     const { footnote: isSupportFootnote } = this.muya.options
 
     switch (true) {
-      case (!!hr && new Set(hr.split('').filter(i => /\S/.test(i))).size === 1):
+      case !!hr && new Set(hr.split('').filter((i) => /\S/.test(i))).size === 1:
         return this.updateThematicBreak(block, hr, line)
 
-      case !!bullet:
+      // Prevents nested lists from being created when updating a list item, which leads to undefined behavior.
+      case !!bullet && !listItem:
         return this.updateList(block, 'bullet', bullet, line)
 
       // only `bullet` list item can be update to `task` list item
       case !!tasklist && listItem && listItem.listItemType === 'bullet':
         return this.updateTaskListItem(block, 'tasklist', tasklist)
 
-      case !!order:
+      // Prevents nested lists from being created when updating a list item, which leads to undefined behavior.
+      case !!order && !listItem:
         return this.updateList(block, 'order', order, line)
 
       case !!atxHeader:
@@ -223,7 +231,7 @@ const updateCtrl = ContentState => {
 
     let bulletMarkerOrDelimiter
     if (type === 'order') {
-      bulletMarkerOrDelimiter = (cleanMarker && cleanMarker.length >= 2) ? cleanMarker.slice(-1) : '.'
+      bulletMarkerOrDelimiter = cleanMarker && cleanMarker.length >= 2 ? cleanMarker.slice(-1) : '.'
     } else {
       const { bulletListMarker } = this.muya.options
       bulletMarkerOrDelimiter = marker ? marker.charAt(0) : bulletListMarker
@@ -240,27 +248,24 @@ const updateCtrl = ContentState => {
     ) {
       this.appendChild(preSibling, newListItemBlock)
       const partChildren = nextSibling.children.splice(0)
-      partChildren.forEach(b => this.appendChild(preSibling, b))
+      partChildren.forEach((b) => this.appendChild(preSibling, b))
       this.removeBlock(nextSibling)
       this.removeBlock(block)
-      const isLooseListItem = preSibling.children.some(c => c.isLooseListItem)
-      preSibling.children.forEach(c => (c.isLooseListItem = isLooseListItem))
-    } else if (
-      preSibling &&
-      this.checkSameMarkerOrDelimiter(preSibling, bulletMarkerOrDelimiter)
-    ) {
+      const isLooseListItem = preSibling.children.some((c) => c.isLooseListItem)
+      preSibling.children.forEach((c) => (c.isLooseListItem = isLooseListItem))
+    } else if (preSibling && this.checkSameMarkerOrDelimiter(preSibling, bulletMarkerOrDelimiter)) {
       this.appendChild(preSibling, newListItemBlock)
       this.removeBlock(block)
-      const isLooseListItem = preSibling.children.some(c => c.isLooseListItem)
-      preSibling.children.forEach(c => (c.isLooseListItem = isLooseListItem))
+      const isLooseListItem = preSibling.children.some((c) => c.isLooseListItem)
+      preSibling.children.forEach((c) => (c.isLooseListItem = isLooseListItem))
     } else if (
       nextSibling &&
       this.checkSameMarkerOrDelimiter(nextSibling, bulletMarkerOrDelimiter)
     ) {
       this.insertBefore(newListItemBlock, nextSibling.children[0])
       this.removeBlock(block)
-      const isLooseListItem = nextSibling.children.some(c => c.isLooseListItem)
-      nextSibling.children.forEach(c => (c.isLooseListItem = isLooseListItem))
+      const isLooseListItem = nextSibling.children.some((c) => c.isLooseListItem)
+      nextSibling.children.forEach((c) => (c.isLooseListItem = isLooseListItem))
     } else {
       // Create a new list when changing list type, bullet or list delimiter
       const listBlock = this.createBlock(wrapperTag, {
@@ -294,7 +299,7 @@ const updateCtrl = ContentState => {
       }
     }
     if (TASK_LIST_REG.test(listItemText)) {
-      const [, , tasklist, , , ,] = listItemText.match(INLINE_UPDATE_REG) || [] // eslint-disable-line comma-spacing
+      const [, , tasklist, , , ,] = listItemText.match(INLINE_UPDATE_REG) || []
       return this.updateTaskListItem(block, 'tasklist', tasklist)
     } else {
       return block
@@ -324,7 +329,9 @@ const updateCtrl = ContentState => {
         listType: 'task'
       })
 
-      this.isFirstChild(parent) ? this.insertBefore(taskListWrapper, grandpa) : this.insertAfter(taskListWrapper, grandpa)
+      this.isFirstChild(parent)
+        ? this.insertBefore(taskListWrapper, grandpa)
+        : this.insertAfter(taskListWrapper, grandpa)
       this.removeBlock(parent)
       this.appendChild(taskListWrapper, parent)
     } else {
