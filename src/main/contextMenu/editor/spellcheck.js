@@ -1,9 +1,8 @@
-import { MenuItem } from 'electron'
+import { MenuItem, ipcMain } from 'electron'
 import log from 'electron-log'
 import { isOsx } from '../../config'
 import { addToDictionary } from '../../spellchecker'
 import { SEPARATOR } from './menuItems'
-import { ipcMain } from 'electron'
 import { t } from '../../i18n'
 
 /**
