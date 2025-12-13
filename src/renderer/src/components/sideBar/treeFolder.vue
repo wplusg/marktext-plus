@@ -9,9 +9,7 @@
       @click="folderNameClick"
     >
       <svg class="icon" aria-hidden="true">
-        <use
-          :xlink:href="`#${isCollapsed ? 'icon-folder-close' : 'icon-folder-open'}`"
-        ></use>
+        <use :xlink:href="`#${isCollapsed ? 'icon-folder-close' : 'icon-folder-open'}`"></use>
       </svg>
       <input
         v-if="renameCache === folder.pathname"
@@ -24,13 +22,13 @@
       />
       <span v-else class="text-overflow">{{ folder.name }}</span>
     </div>
-    <div v-show="!isCollapsed" class="folder-contents">
-      <Folder
+    <div v-if="!isCollapsed" class="folder-contents">
+      <tree-folder
         v-for="childFolder of folder.folders"
         :key="childFolder.id"
         :folder="childFolder"
         :depth="depth + 1"
-      ></Folder>
+      ></tree-folder>
       <input
         v-if="createCache.dirname === folder.pathname"
         ref="input"
@@ -40,25 +38,18 @@
         :style="{ 'margin-left': `${depth * 5 + 15}px` }"
         @keypress.enter="handleInputEnter"
       />
-      <File
-        v-for="file of folder.files"
-        :key="file.id"
-        :file="file"
-        :depth="depth + 1"
-      ></File>
+      <File v-for="file of folder.files" :key="file.id" :file="file" :depth="depth + 1"></File>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, computed } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProjectStore } from '@/store/project'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
 import File from './treeFile.vue'
-// Import self for recursive rendering
-import Folder from './treeFolder.vue'
 
 const props = defineProps({
   folder: {
@@ -95,7 +86,6 @@ const handleInputFocus = () => {
       createName.value = ''
       if (props.folder) {
         isCollapsed.value = false
-        props.folder.isCollapsed = false
       }
     }
   })
@@ -107,7 +97,6 @@ const handleInputEnter = () => {
 
 const folderNameClick = () => {
   isCollapsed.value = !isCollapsed.value
-  props.folder.isCollapsed = isCollapsed.value
 }
 
 const noop = () => {}
