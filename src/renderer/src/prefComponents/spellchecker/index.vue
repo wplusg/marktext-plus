@@ -74,7 +74,7 @@
 <script setup>
 import log from 'electron-log'
 import { usePreferencesStore } from '@/store/preferences'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import Compound from '../common/compound'
 import CurSelect from '../common/select'
@@ -123,8 +123,10 @@ const getAvailableDictionaries = async () => {
   })
 }
 
-const handleSpellcheckerLanguage = (languageCode) => {
+const handleSpellcheckerLanguage = async (languageCode) => {
   onSelectChange('spellcheckerLanguage', languageCode)
+
+  await window.electron.ipcRenderer.invoke('mt::spellchecker-switch-language', languageCode)
 }
 
 const handleSpellcheckerEnabled = (isEnabled) => {

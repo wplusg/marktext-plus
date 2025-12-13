@@ -80,7 +80,7 @@
     "@types/source-map-support": "^0.5.10",
     "@vitejs/plugin-vue": "^6.0.1",
     "cross-env": "^7.0.3",
-    "electron": "^38.1.0",
+    "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "electron-vite": "^4.0.0",
     "eslint": "^9.33.0",
