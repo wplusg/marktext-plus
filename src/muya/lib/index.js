@@ -207,9 +207,11 @@ class Muya {
       // This is because muyaIndexCursors are not based off a key to a specific block, so we don't know which it is
       // We get a muyaIndexCursor if we are using the Source Code editor.
       const cursorInfo = this.contentState.addCursorToMarkdown(markdown, muyaIndexCursor)
+      // #54 https://github.com/Tkaixiang/marktext/issues/54 This line adds the cursor signature infront that messes up the markdown parsing, so we need to handle the
+      // parsing of the cursor signatures in the lexer.
       const newMarkdown = cursorInfo.markdown
 
-      this.contentState.importMarkdown(newMarkdown)
+      this.contentState.importMarkdown(newMarkdown, true) // Tell the lexer to check for the cursor signatures.
 
       finalCursor = this.contentState.convertMuyaIndexCursortoCursor(muyaIndexCursor)
     } else {

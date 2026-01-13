@@ -1,6 +1,7 @@
 import { normal, gfm, pedantic } from './blockRules'
 import options from './options'
 import { splitCells, rtrim, getUniqueId } from './utils'
+import { CURSOR_ANCHOR_DNA, CURSOR_FOCUS_DNA } from '../../config'
 
 /**
  * Block Lexer
@@ -25,11 +26,11 @@ function Lexer(opts) {
  * Preprocessing
  */
 
-Lexer.prototype.lex = function (src) {
+Lexer.prototype.lex = function (src, checkCursorSignature = false) {
   src = src.replace(/\r\n|\r/g, '\n').replace(/\t/g, '    ')
   this.checkFrontmatter = true
   this.footnoteOrder = 0
-  this.token(src, true)
+  this.token(src, true, null, checkCursorSignature)
 
   // Move footnote token to the end of tokens.
   const { tokens } = this
@@ -60,9 +61,15 @@ Lexer.prototype.lex = function (src) {
 /**
  * Lexing
  * prevListIsOrdered: null (default) | true | false (if set to non-null value, it means we are in a list)
+ * checkCursorSignature: Tells the lexer on whether to look out for the inserted cursorSignature and handle accordingly. Enable to prevent invalid markdown parsing when a cursorSignature is inserted.
  */
 
-Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
+Lexer.prototype.token = function (
+  src,
+  top,
+  prevListIsOrdered = null,
+  checkCursorSignature = false
+) {
   const { footnote, frontMatter, isGitlabCompatibilityEnabled, math } = this.options
   src = src.replace(/^ +$/gm, '')
 
@@ -108,7 +115,24 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
     this.checkFrontmatter = false
   }
 
+  let foundAnchorSignature = false
+  let foundFocusSignature = false
   while (src) {
+    // We need to check for the cursor signature. If it is at the front of a line, it can mess the parsing up
+    let cursorAnchorFocus = ''
+    if (checkCursorSignature) {
+      if (!foundAnchorSignature && src.startsWith(CURSOR_ANCHOR_DNA)) {
+        cursorAnchorFocus += CURSOR_ANCHOR_DNA
+        src = src.substring(CURSOR_ANCHOR_DNA.length)
+        foundAnchorSignature = true
+      }
+      if (!foundFocusSignature && src.startsWith(CURSOR_FOCUS_DNA)) {
+        cursorAnchorFocus += CURSOR_FOCUS_DNA
+        src = src.substring(CURSOR_FOCUS_DNA.length)
+        foundFocusSignature = true
+      }
+    }
+
     // newline
     cap = this.rules.newline.exec(src)
     if (cap) {
@@ -133,7 +157,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
         this.tokens.push({
           type: 'code',
           codeBlockStyle: 'indented',
-          text: !this.options.pedantic ? rtrim(cap, '\n') : cap
+          text: cursorAnchorFocus + (!this.options.pedantic ? rtrim(cap, '\n') : cap)
         })
       }
       continue
@@ -146,7 +170,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
         src = src.substring(cap[0].length)
         this.tokens.push({
           type: 'multiplemath',
-          text: cap[1],
+          text: cursorAnchorFocus + cap[1],
           mathStyle: ''
         })
         continue
@@ -159,7 +183,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
           src = src.substring(cap[0].length)
           this.tokens.push({
             type: 'multiplemath',
-            text: cap[2] || '',
+            text: cursorAnchorFocus + (cap[2] || ''),
             mathStyle: 'gitlab'
           })
           continue
@@ -207,7 +231,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
     if (cap) {
       src = src.substring(cap[0].length)
       const raw = cap[0]
-      const text = indentCodeCompensation(raw, cap[3] || '')
+      const text = cursorAnchorFocus + indentCodeCompensation(raw, cap[3] || '')
       this.tokens.push({
         type: 'code',
         codeBlockStyle: 'fenced',
@@ -221,7 +245,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
     cap = this.rules.heading.exec(src)
     if (cap) {
       src = src.substring(cap[0].length)
-      let text = cap[2] ? cap[2].trim() : ''
+      let text = cursorAnchorFocus + (cap[2] ? cap[2].trim() : '')
 
       if (text.endsWith('#')) {
         let trimmed = rtrim(text, '#')
@@ -281,7 +305,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
     // hr
     cap = this.rules.hr.exec(src)
     if (cap) {
-      const marker = cap[0].replace(/\n*$/, '')
+      const marker = cursorAnchorFocus + cap[0].replace(/\n*$/, '')
       src = src.substring(cap[0].length)
       this.tokens.push({
         type: 'hr',
@@ -304,7 +328,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
       // Pass `top` to keep the current
       // "toplevel" state. This is exactly
       // how markdown.pl works.
-      this.token(cap, top)
+      this.token(cap, top, null, checkCursorSignature)
 
       this.tokens.push({
         type: 'blockquote_end'
@@ -331,11 +355,11 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
 
         this.tokens.push({
           type: 'paragraph',
-          text: cap[0].trimEnd()
+          text: cursorAnchorFocus + cap[0].trimEnd()
         })
         // Recurse for any valid nested lists of the same type
         if (cap.length > 1) {
-          this.token(cap.slice(1).join('\n'), false, prevListIsOrdered)
+          this.token(cap.slice(1).join('\n'), false, prevListIsOrdered, checkCursorSignature)
         }
         continue
       }
@@ -386,6 +410,9 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
             checked = undefined
           }
         }
+
+        // Add the cursor signature back to the item text only if it is the 1st item in the list
+        if (i === 0) item = cursorAnchorFocus + item
 
         if (i === 0) {
           isTaskList = newIsTaskListItem
@@ -495,11 +522,11 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
         if (/^\s*$/.test(item)) {
           this.tokens.push({
             type: 'text',
-            text: ''
+            text: cursorAnchorFocus
           })
         } else {
           // Recurse.
-          this.token(item, false, isOrdered)
+          this.token(item, false, isOrdered, checkCursorSignature)
         }
 
         this.tokens.push({
@@ -522,11 +549,13 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
         pre:
           !this.options.sanitizer &&
           (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
-        text: this.options.sanitize
-          ? this.options.sanitizer
-            ? this.options.sanitizer(cap[0])
-            : escape(cap[0])
-          : cap[0]
+        text:
+          cursorAnchorFocus +
+          (this.options.sanitize
+            ? this.options.sanitizer
+              ? this.options.sanitizer(cap[0])
+              : escape(cap[0])
+            : cap[0])
       })
       continue
     }
@@ -554,7 +583,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
       if (this.options.disableInline) {
         this.tokens.push({
           type: 'paragraph',
-          text: text.replace(/\n*$/, '')
+          text: cursorAnchorFocus + text.replace(/\n*$/, '')
         })
       }
       continue
@@ -612,7 +641,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
           type: 'heading',
           headingStyle: 'setext',
           depth: cap[2].charAt(0) === '=' ? 1 : 2,
-          text: precededToken.text + '\n' + cap[1],
+          text: cursorAnchorFocus + (precededToken.text + '\n' + cap[1]),
           marker
         })
       } else {
@@ -620,7 +649,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
           type: 'heading',
           headingStyle: 'setext',
           depth: cap[2].charAt(0) === '=' ? 1 : 2,
-          text: cap[1],
+          text: cursorAnchorFocus + cap[1],
           marker
         })
       }
@@ -639,7 +668,9 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
 
       this.tokens.push({
         type: 'paragraph',
-        text: cap[1].charAt(cap[1].length - 1) === '\n' ? cap[1].slice(0, -1) : cap[1]
+        text:
+          cursorAnchorFocus +
+          (cap[1].charAt(cap[1].length - 1) === '\n' ? cap[1].slice(0, -1) : cap[1])
       })
       continue
     }
@@ -651,7 +682,7 @@ Lexer.prototype.token = function (src, top, prevListIsOrdered = null) {
       src = src.substring(cap[0].length)
       this.tokens.push({
         type: 'text',
-        text: cap[0]
+        text: cursorAnchorFocus + cap[0]
       })
       continue
     }

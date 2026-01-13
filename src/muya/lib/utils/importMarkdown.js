@@ -67,7 +67,13 @@ const turnSoftBreakToSpan = (html) => {
 
 const importRegister = (ContentState) => {
   // turn markdown to blocks
-  ContentState.prototype.markdownToState = function (markdown) {
+  /**
+   *
+   * @param {*} markdown
+   * @param {*} checkCursorSignature Tells the lexer on whether to look out for the inserted cursorSignature and handle accordingly. Enable to prevent invalid markdown parsing when a cursorSignature is inserted.
+   * @returns
+   */
+  ContentState.prototype.markdownToState = function (markdown, checkCursorSignature = false) {
     // mock a root block...
     const rootState = {
       key: null,
@@ -90,7 +96,7 @@ const importRegister = (ContentState) => {
       footnote,
       isGitlabCompatibilityEnabled,
       superSubScript
-    }).lex(markdown)
+    }).lex(markdown, checkCursorSignature)
 
     let token
     let block
@@ -623,8 +629,13 @@ const importRegister = (ContentState) => {
     this.cursor = cursor
   }
 
-  ContentState.prototype.importMarkdown = function (markdown) {
-    this.blocks = this.markdownToState(markdown)
+  /**
+   *
+   * @param {*} markdown
+   * @param {*} checkCursorSignature Tells the lexer on whether to look out for the inserted cursorSignature and handle accordingly. Enable to prevent invalid markdown parsing when a cursorSignature is inserted.
+   */
+  ContentState.prototype.importMarkdown = function (markdown, checkCursorSignature = false) {
+    this.blocks = this.markdownToState(markdown, checkCursorSignature)
   }
 
   ContentState.prototype.extractImages = function (markdown) {
