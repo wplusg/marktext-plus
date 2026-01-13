@@ -47,13 +47,20 @@ export const dataURItoBlob = function (dataURI) {
 }
 
 export const adjustCursor = (cursor, preline, line, nextline) => {
+  // Return null if line doesn't exist (e.g., cursor beyond document bounds)
+  if (typeof line !== 'string') {
+    return null
+  }
+
   let newCursor = Object.assign({}, { line: cursor.line, ch: cursor.ch })
   // It's need to adjust the cursor when cursor is at begin or end in table row.
   if (/\|[^|]+\|.+\|\s*$/.test(line)) {
     if (/\|\s*:?-+:?\s*\|[:-\s|]+\|\s*$/.test(line)) {
       // cursor in `| --- | :---: |` :the second line of table
-      newCursor.line += 1 // reset the cursor to the next line
-      newCursor.ch = nextline.indexOf('|') + 1
+      if (typeof nextline === 'string') {
+        newCursor.line += 1 // reset the cursor to the next line
+        newCursor.ch = nextline.indexOf('|') + 1
+      }
     } else {
       // cursor is not at the second line to table
       if (cursor.ch <= line.indexOf('|')) newCursor.ch = line.indexOf('|') + 1
