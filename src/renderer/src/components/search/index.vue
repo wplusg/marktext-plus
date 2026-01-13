@@ -13,7 +13,6 @@
             v-model="searchValue"
             type="text"
             :placeholder="t('search.searchPlaceholder')"
-            @keyup="debouncedSearchFn($event)"
           />
           <div class="controls">
             <span class="search-result"
@@ -133,6 +132,11 @@ const search = ref(null)
 const { currentFile } = storeToRefs(editorStore)
 const searchMatches = computed(() => currentFile.value?.searchMatches)
 
+watch(searchValue, () => {
+  if (!showSearch.value) return // make sure search box is actually open
+  debouncedSearchFn()
+})
+
 watch(searchMatches, (newValue, oldValue) => {
   if (!newValue || !oldValue) return
   const { value } = newValue
@@ -250,16 +254,7 @@ const find = (action) => {
   bus.emit('find-action', action)
 }
 
-const searchFn = (event) => {
-  if (event && event.key === 'Escape') {
-    return
-  }
-
-  if (event && event.key === 'Enter') {
-    find('next')
-    return
-  }
-
+const searchFn = () => {
   if (isRegexp.value) {
     // Handle invalid regexp.
     try {
