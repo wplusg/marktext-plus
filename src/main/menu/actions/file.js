@@ -470,8 +470,23 @@ ipcMain.on('mt::format-link-click', (e, { data, dirname }) => {
   if (!data || (!data.href && !data.text)) {
     return
   }
+  const win = BrowserWindow.fromWebContents(e.sender)
 
-  const urlCandidate = data.href || data.text
+  const rawUrl = data.href || data.text
+  const urlCandidate = rawUrl.replace(/^<(.+)>$/, '$1') // Replace any <> CommonMark #489
+  if (urlCandidate === rawUrl) {
+    // No <> found, no spaces should be allowed
+    if (/\s/.test(rawUrl)) {
+      win.webContents.send('mt::show-notification', {
+        title: 'Links cannot contain spaces',
+        type: 'error',
+        message:
+          'Either URI encode: <code>My%20Link.md</code> <br> or wrap it in brackets: <br> <code><./My Link.md></code>. <br> See CommonMark #488 for details.'
+      })
+      return
+    }
+  }
+
   if (URL_REG.test(urlCandidate)) {
     shell.openExternal(urlCandidate)
     return
@@ -480,20 +495,14 @@ ipcMain.on('mt::format-link-click', (e, { data, dirname }) => {
     return
   }
 
-  const href = data.href
-  if (!href) {
-    return
-  }
-
-  let pathname = null
-  if (path.isAbsolute(href)) {
-    pathname = href
-  } else if (dirname && !path.isAbsolute(href)) {
-    pathname = path.join(dirname, href)
+  let pathname = urlCandidate
+  if (dirname && !path.isAbsolute(urlCandidate)) {
+    pathname = path.join(dirname, urlCandidate)
   }
 
   if (pathname) {
-    pathname = path.normalize(pathname)
+    // decodeURIComponent() CommonMark #503, allow percent encoded path names to open files. https://github.com/Tkaixiang/marktext/issues/57
+    pathname = path.normalize(decodeURIComponent(pathname))
     if (isMarkdownFile(pathname)) {
       const win = BrowserWindow.fromWebContents(e.sender)
       openFileOrFolder(win, pathname)
