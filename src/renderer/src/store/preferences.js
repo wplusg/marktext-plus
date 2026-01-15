@@ -34,6 +34,8 @@ export const usePreferencesStore = defineStore('preferences', {
     endOfLine: 'default',
     defaultEncoding: 'utf8',
     autoGuessEncoding: true,
+    autoNormalizeMarkdownOnOpen: false,
+
     trimTrailingNewline: 2,
     textDirection: 'ltr',
     hideQuickInsertHint: false,
@@ -109,13 +111,13 @@ export const usePreferencesStore = defineStore('preferences', {
   actions: {
     SET_USER_PREFERENCE(preference) {
       const oldLanguage = this.language
-      
+
       Object.keys(preference).forEach((key) => {
         if (typeof preference[key] !== 'undefined' && typeof this[key] !== 'undefined') {
           this[key] = preference[key]
         }
       })
-      
+
       // Update i18n language if language preference changed
       if (preference.language && preference.language !== oldLanguage) {
         setLanguage(preference.language)
@@ -139,12 +141,12 @@ export const usePreferencesStore = defineStore('preferences', {
     SET_SINGLE_PREFERENCE({ type, value }) {
       // Update local state
       this[type] = value
-      
+
       // Update i18n language if language preference changed
       if (type === 'language') {
         setLanguage(value)
       }
-      
+
       // save to electron-store
       window.electron.ipcRenderer.send('mt::set-user-preference', { [type]: value })
     },

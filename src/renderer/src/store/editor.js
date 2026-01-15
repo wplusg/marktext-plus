@@ -946,6 +946,7 @@ export const useEditorStore = defineStore('editor', {
       const docState = createDocumentState(Object.assign(markdownDocument, options))
       const { id, cursor } = docState
 
+      console.log('received markdown', JSON.stringify(markdown))
       if (selected) {
         this.UPDATE_CURRENT_FILE(docState)
         bus.emit('file-loaded', { id, markdown, cursor })
@@ -1019,7 +1020,7 @@ export const useEditorStore = defineStore('editor', {
         return
       }
 
-      markdown = adjustTrailingNewlines(markdown, trimTrailingNewline)
+      // markdown = adjustTrailingNewlines(markdown, trimTrailingNewline)
       this.currentFile.markdown = markdown
 
       if (oldMarkdown.length === 0 && markdown.length === 1 && markdown[0] === '\n') {
@@ -1036,12 +1037,12 @@ export const useEditorStore = defineStore('editor', {
         this.toc = listToTree(toc)
       }
 
-      // Ignore the first content change after file load (Muya normalizes content)
-      if (this.currentFile.isFirstContentChange) {
-        this.currentFile.isFirstContentChange = false
-        return
-      }
-
+      console.trace('LISTEN_FOR_CONTENT_CHANGE: Document changed.')
+      console.log('markdown === oldMarkdown?', markdown === oldMarkdown)
+      console.log('markdown', JSON.stringify(markdown))
+      console.log('oldMarkdown', JSON.stringify(oldMarkdown))
+      const diff = markdown.split('').filter((char, i) => char !== oldMarkdown[i])
+      console.log(diff)
       if (markdown !== oldMarkdown) {
         this.currentFile.isSaved = false
         if (pathname && autoSave) {
@@ -1250,6 +1251,8 @@ export const useEditorStore = defineStore('editor', {
                   return
                 }
               }
+
+              console.log('LISTEN_FOR_FILE_CHANGE: File changed on disk:', pathname)
 
               tab.isSaved = false
               this.pushTabNotification({

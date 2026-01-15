@@ -37,9 +37,7 @@ export const defaultFileState = {
     value: ''
   },
   // Per tab notifications
-  notifications: [],
-  // Track whether this is the first content change after loading (to ignore Muya normalization)
-  isFirstContentChange: true
+  notifications: []
 }
 
 export const getOptionsFromState = (file) => {

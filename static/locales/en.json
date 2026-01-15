@@ -593,7 +593,7 @@
         "hideQuickInsertHint": "Hide quick insert hint",
         "hideLinkPopup": "Hide link popup",
         "autoCheck": "Auto check",
-        "autoNormalizeMarkdownOnOpen": "Auto-normalize line endings on open",
+        "autoNormalizeMarkdownOnOpen": "Auto-normalize line endings to LF and (optionally) Trailing Newlines on open",
         "wrapCodeBlocks": "Wrap code blocks"
       }
     },

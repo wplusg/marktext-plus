@@ -130,6 +130,7 @@ class Muya {
     const history = this.getHistory()
     const toc = this.getTOC()
 
+    console.log('markdown', JSON.stringify(markdown))
     eventCenter.dispatch('change', { markdown, wordCount, cursor, muyaIndexCursor, history, toc })
   }
 

@@ -147,9 +147,7 @@ export const loadMarkdownFile = async (
     }
     // When not auto-normalizing and trimTrailingNewline is set to auto-detect (2),
     // we should use "disabled" (3) to preserve the file exactly as-is
-    if (trimTrailingNewline === 2) {
-      trimTrailingNewline = 3
-    }
+    trimTrailingNewline = 3
   }
 
   const filename = path.basename(pathname)
