@@ -48,7 +48,7 @@ export default function image(h, cursor, block, token, outerClass) {
   const title = token.attrs.title
   const width = token.attrs.width
   const height = token.attrs.height
-  src = src.replace(/ /g, '%20')
+  src = src.replace(/ /g, '%20') // Automatically replaces spaces with %20 to avoid parsing errors when exporting.
 
   if (src) {
     ;({ id, isSuccess, domsrc } = this.loadImageAsync(imageInfo, token.attrs))

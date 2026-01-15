@@ -68,6 +68,9 @@ class ImageSelector extends BaseFloat {
         // Auto focus and select all content of the `src.input` element.
         const input = this.imageSelectorContainer.querySelector('input.src')
         if (input) {
+          // Force value update - else Snabbdom might not update the value attribute when we re-open the image selector
+          // as it does not listen to users dirtying the input value.
+          input.value = this.state.src
           input.focus()
           if (typeof input.select === 'function') {
             input.select()
@@ -233,7 +236,7 @@ class ImageSelector extends BaseFloat {
   }
 
   renderHeader() {
-    const t = this.muya?.options?.t || ((k)=>k)
+    const t = this.muya?.options?.t || ((k) => k)
     const tabs = [
       {
         label: t('editor.image.selector.tab.select'),
@@ -268,7 +271,7 @@ class ImageSelector extends BaseFloat {
 
   renderBody = () => {
     const { tab, state, isFullMode } = this
-    const t = this.muya?.options?.t || ((k)=>k)
+    const t = this.muya?.options?.t || ((k) => k)
     const { alt, title, src } = state
     let bodyContent = null
     if (tab === 'select') {
