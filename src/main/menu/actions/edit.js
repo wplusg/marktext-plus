@@ -12,12 +12,17 @@ ipcMain.on('mt::ask-for-image-auto-path', (e, { pathname, src, id }) => {
     return
   }
 
-  if (src.endsWith('/') || src.endsWith('\\') || src.endsWith('.')) {
-    return win.webContents.send(`mt::response-of-image-path-${id}`, [])
-  }
   const fullPath = path.isAbsolute(src) ? src : path.join(path.dirname(pathname), src)
-  const dir = path.dirname(fullPath)
-  const searchKey = path.basename(fullPath)
+  // Handle the case where it ends with a trailing slash (i.e. a directory) - we should list everything in the directory
+  let dir = null
+  let searchKey = null
+  if (fullPath.endsWith(path.sep)) {
+    dir = fullPath.slice(0, -1) // It should be the entire path minus just the trailing slash
+    searchKey = ''
+  } else {
+    dir = path.dirname(fullPath)
+    searchKey = path.basename(fullPath)
+  }
   searchFilesAndDir(dir, searchKey)
     .then((files) => {
       return win.webContents.send(`mt::response-of-image-path-${id}`, files)

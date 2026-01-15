@@ -50,6 +50,7 @@ class ImageSelector extends BaseFloat {
         }
 
         Object.assign(this.state, imageInfo.token.attrs)
+        this.imageInfo = imageInfo
 
         // Remove file protocol to allow autocomplete.
         const imageSrc = this.state.src
@@ -61,7 +62,6 @@ class ImageSelector extends BaseFloat {
           this.state.src = imageSrc.substring(protocolLen)
         }
 
-        this.imageInfo = imageInfo
         this.show(reference, cb)
         this.render()
 
@@ -139,18 +139,20 @@ class ImageSelector extends BaseFloat {
       key === EVENT_KEYS.ArrowUp ||
       key === EVENT_KEYS.ArrowDown ||
       key === EVENT_KEYS.Tab ||
-      key === EVENT_KEYS.Enter
+      (key === EVENT_KEYS.Enter && !this.state.src.endsWith('/') && !this.state.src.endsWith('\\'))
     ) {
       return
     }
-    const value = event.target.value
+
+    // Handle special case where the user selects a directory by pressing enter
+    const value = EVENT_KEYS.Enter ? this.state.src : event.target.value
     const { eventCenter } = this.muya
     const reference = this.imageSelectorContainer.querySelector('input.src')
     const cb = (item) => {
       const { text } = item
 
       let basePath = ''
-      const pathSep = value.match(/(\/|\\)(?:[^/\\]+)$/)
+      const pathSep = value.match(/(\/|\\)(?:[^/\\]*)$/)
       if (pathSep && pathSep[0]) {
         basePath = value.substring(0, pathSep.index + 1)
       }
