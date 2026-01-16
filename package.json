@@ -79,6 +79,7 @@
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@types/source-map-support": "^0.5.10",
     "@vitejs/plugin-vue": "^6.0.3",
+    "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
     "electron": "^39.2.7",
     "electron-builder": "^26.4.0",

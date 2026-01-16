@@ -35,9 +35,9 @@
   </a>
 </div>
 
-- [MarkText](https://github.com/marktext/marktext) is a free and open source markdown editor originally written by [Jocs](https://github.com/Jocs) and [contributors](https://github.com/marktext/marktext/graphs/contributors).
-
-- Sadly, the core repository became unmaintained since about 3 years ago, but various Quality of Life issues remained that I noticed in my daily usage.
+- [MarkText](https://github.com/marktext/marktext) is a free and open source markdown editor originally written by [Jocs](https://github.com/Jocs) and [contributors](https://github.com/Tkaixiang/marktext/graphs/contributors).
+  
+  - Sadly, the core repository became unmaintained since about 3 years ago, but various Quality of Life issues remained that I noticed in my daily usage.
 
 - This repository serves as an attempt at modernising my favourite Markdown Editor, and is a fork based off [Jacob Whall's Fork](https://github.com/jacobwhall/marktext)
   
@@ -53,15 +53,12 @@
 
 - Simply check out the [Releases Page](https://github.com/Tkaixiang/marktext/releases)!
 
-- Tested on:
-  
-  - `Windows 11`
+- Tested on: `Windows 11`
 
 ## Linux
 
 - Simply check out the [Releases Page](https://github.com/Tkaixiang/marktext/releases)
-- Tested on:
-  - `Ubuntu 24.0.2` (`AppImage` and `.deb` packages)
+- Tested on: `Ubuntu 24.0.2`, `Ubuntu 22.04.5`
   - _Would love some help in testing the other Linux packages!_
 
 ### Linux Package Managers
@@ -135,7 +132,21 @@ MarkText includes **33 built-in themes** - 10 light and 23 dark themes:
 |:--------------------:|:------------------------:|:-------------------:|
 | ![](docs/source.gif) | ![](docs/typewriter.gif) | ![](docs/focus.gif) |
 
-# 4. Motivation
+# 4. Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
+<!-- prettier-ignore-start -->
+
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+# 5. Motivation
 
 ## 1. Soo is this fork any different from the countless others?
 
