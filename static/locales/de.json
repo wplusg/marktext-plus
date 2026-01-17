@@ -414,7 +414,7 @@
       "items": {
         "autoSave": "Den bearbeiteten Inhalt automatisch speichern",
         "autoSaveDelay": "Die Zeit in ms nach einer Änderung, bis die Datei gespeichert wird",
-        "autoNormalizeMarkdownOnOpen": "Zeilenenden beim Öffnen automatisch zu LF normalisieren und optional nachgestellte neue Zeilen",
+        "autoNormalizeLineEndings": "Zeilenenden beim Öffnen automatisch zu LF normalisieren und optional nachgestellte neue Zeilen",
         "titleBarStyle": "Der Titelleisten-Stil (nur Windows und Linux-System)",
         "openFilesInNewWindow": "Dateien in einem neuen Fenster öffnen",
         "openFolderInNewWindow": "Ordner über Menü in einem neuen Fenster öffnen",
@@ -594,6 +594,7 @@
         "hideQuickInsertHint": "Schnelleinfügung-Hinweis ausblenden",
         "hideLinkPopup": "Link-Popup ausblenden",
         "autoCheck": "Automatische Überprüfung",
+        "autoNormalizeLineEndings": "Zeilenenden beim Öffnen automatisch auf LF normalisieren",
         "wrapCodeBlocks": "Code-Blöcke umbrechen"
       }
     },

@@ -415,7 +415,7 @@
       "items": {
         "autoSave": "自動儲存正在編輯的內容",
         "autoSaveDelay": "檔案儲存前的延遲時間（毫秒）",
-        "autoNormalizeMarkdownOnOpen": "開啟時自動將行尾標準化為 LF，可選擇處理結尾換行符",
+        "autoNormalizeLineEndings": "開啟時自動將行尾標準化為 LF，可選擇處理結尾換行符",
         "titleBarStyle": "標題欄樣式（僅限 Windows 和 Linux 系統）",
         "openFilesInNewWindow": "在新視窗中開啟檔案",
         "openFolderInNewWindow": "透過選單在新視窗中開啟資料夾",
@@ -595,6 +595,7 @@
         "hideQuickInsertHint": "隱藏快速插入提示",
         "hideLinkPopup": "隱藏連結彈出視窗",
         "autoCheck": "自動檢查",
+        "autoNormalizeLineEndings": "開啟時自動將行尾標準化為 LF",
         "wrapCodeBlocks": "換行程式碼區塊"
       }
     },

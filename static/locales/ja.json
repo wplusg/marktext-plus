@@ -415,7 +415,7 @@
       "items": {
         "autoSave": "編集中のコンテンツを自動保存",
         "autoSaveDelay": "変更後にファイルが保存されるまでの時間（ミリ秒）",
-        "autoNormalizeMarkdownOnOpen": "開くときに改行コードを LF に自動正規化し、オプションで末尾の改行も処理します",
+        "autoNormalizeLineEndings": "開くときに改行コードを LF に自動正規化し、オプションで末尾の改行も処理します",
         "titleBarStyle": "タイトルバーのスタイル（WindowsおよびLinuxシステムのみ）",
         "openFilesInNewWindow": "新しいウィンドウでファイルを開く",
         "openFolderInNewWindow": "メニューから新しいウィンドウでフォルダを開く",
@@ -595,6 +595,7 @@
         "hideQuickInsertHint": "クイック挿入ヒントを隠す",
         "hideLinkPopup": "リンクポップアップを隠す",
         "autoCheck": "自動チェック",
+        "autoNormalizeLineEndings": "開くときに改行コードを自動的にLFに正規化する",
         "wrapCodeBlocks": "コードブロックを折り返し"
       }
     },

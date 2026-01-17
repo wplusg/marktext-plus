@@ -415,7 +415,7 @@
       "items": {
         "autoSave": "편집 중인 내용을 자동으로 저장",
         "autoSaveDelay": "변경 후 파일이 저장되기까지의 시간(밀리초)",
-        "autoNormalizeMarkdownOnOpen": "파일을 열 때 줄 끝을 LF로 자동 정규화하고 선택적으로 후행 줄 바꿈을 처리합니다",
+        "autoNormalizeLineEndings": "파일을 열 때 줄 끝을 LF로 자동 정규화하고 선택적으로 후행 줄 바꿈을 처리합니다",
         "titleBarStyle": "제목 표시줄 스타일(Windows 및 Linux 시스템만)",
         "openFilesInNewWindow": "새 창에서 파일 열기",
         "openFolderInNewWindow": "메뉴를 통해 새 창에서 폴더 열기",
@@ -595,6 +595,7 @@
         "hideQuickInsertHint": "빠른 삽입 힌트 숨기기",
         "hideLinkPopup": "링크 팝업 숨기기",
         "autoCheck": "자동 확인",
+        "autoNormalizeLineEndings": "열 때 줄 바꿈을 자동으로 LF로 정규화",
         "wrapCodeBlocks": "코드 블록 줄바꿈"
       }
     },

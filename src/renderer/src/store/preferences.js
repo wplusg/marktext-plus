@@ -34,7 +34,7 @@ export const usePreferencesStore = defineStore('preferences', {
     endOfLine: 'default',
     defaultEncoding: 'utf8',
     autoGuessEncoding: true,
-    autoNormalizeMarkdownOnOpen: false,
+    autoNormalizeLineEndings: false,
 
     trimTrailingNewline: 2,
     textDirection: 'ltr',

@@ -29,6 +29,7 @@
   "endOfLine": "default",
   "defaultEncoding": "utf8",
   "autoGuessEncoding": true,
+  "autoNormalizeLineEndings": false,
   "trimTrailingNewline": 2,
   "textDirection": "ltr",
   "hideQuickInsertHint": false,

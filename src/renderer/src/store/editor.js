@@ -1020,7 +1020,7 @@ export const useEditorStore = defineStore('editor', {
         return
       }
 
-      // markdown = adjustTrailingNewlines(markdown, trimTrailingNewline)
+      markdown = adjustTrailingNewlines(markdown, trimTrailingNewline)
       this.currentFile.markdown = markdown
 
       if (oldMarkdown.length === 0 && markdown.length === 1 && markdown[0] === '\n') {

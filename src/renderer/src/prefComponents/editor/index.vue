@@ -125,13 +125,12 @@
           :on-change="(value) => onSelectChange('autoGuessEncoding', value)"
         ></bool>
         <bool
-          :description="t('preferences.editor.misc.autoNormalizeMarkdownOnOpen')"
-          :bool="autoNormalizeMarkdownOnOpen"
-          :on-change="(value) => onSelectChange('autoNormalizeMarkdownOnOpen', value)"
+          :description="t('preferences.editor.misc.autoNormalizeLineEndings')"
+          :bool="autoNormalizeLineEndings"
+          :on-change="(value) => onSelectChange('autoNormalizeLineEndings', value)"
         ></bool>
         <cur-select
           :description="t('preferences.editor.fileRepresentation.trailingNewlines.title')"
-          :disable="!autoNormalizeMarkdownOnOpen"
           :value="trimTrailingNewline"
           :options="getTrimTrailingNewlineOptions()"
           :on-change="(value) => onSelectChange('trimTrailingNewline', value)"
@@ -215,7 +214,7 @@ const {
   hideQuickInsertHint,
   hideLinkPopup,
   autoCheck,
-  autoNormalizeMarkdownOnOpen,
+  autoNormalizeLineEndings,
   wrapCodeBlocks,
   editorLineWidth,
   defaultEncoding,

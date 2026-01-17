@@ -74,7 +74,7 @@ export const writeMarkdownFile = (pathname, content, options) => {
  * @param {string} preferredEol The preferred EOL.
  * @param {boolean} autoGuessEncoding Whether we should try to auto guess encoding.
  * @param {*} trimTrailingNewline The trim trailing newline option.
- * @param {boolean} autoNormalizeMarkdownOnOpen Whether to automatically normalize line endings and detect trailing newlines on open.
+ * @param {boolean} autoNormalizeLineEndings Whether to automatically normalize line endings
  * @returns {IMarkdownDocumentRaw} Returns a raw markdown document.
  */
 export const loadMarkdownFile = async (
@@ -82,7 +82,7 @@ export const loadMarkdownFile = async (
   preferredEol,
   autoGuessEncoding = true,
   trimTrailingNewline = 2,
-  autoNormalizeMarkdownOnOpen = false
+  autoNormalizeLineEndings = false
 ) => {
   // TODO: Use streams to not buffer the file multiple times and only guess
   //       encoding on the first 256/512 bytes.
@@ -111,43 +111,39 @@ export const loadMarkdownFile = async (
 
   let adjustLineEndingOnSave = false
 
-  // Only auto-normalize if the preference is enabled
-  if (autoNormalizeMarkdownOnOpen) {
-    if (isMixedLineEndings || isUnknownEnding || lineEnding !== 'lf') {
-      adjustLineEndingOnSave = lineEnding !== 'lf'
-      // Convert to LF for internal use.
-      markdown = convertLineEndings(markdown, 'lf')
-    }
+  console.log('detected line ending:', {
+    isLf,
+    isCrlf,
+    isMixedLineEndings,
+    isUnknownEnding,
+    lineEnding
+  })
 
-    // Detect final newline
-    if (trimTrailingNewline === 2) {
-      if (!markdown) {
-        // Use default value
-        trimTrailingNewline = 3
+  if (isMixedLineEndings || isUnknownEnding || lineEnding !== 'lf') {
+    markdown = convertLineEndings(markdown, 'lf')
+    // Marktext always uses LF internally.
+    // If the user did not request LF line endings, we need to adjust on save.
+    adjustLineEndingOnSave = !autoNormalizeLineEndings && lineEnding !== 'lf'
+  }
+
+  // Detect final newline
+  if (trimTrailingNewline === 2) {
+    if (!markdown) {
+      // Use default value
+      trimTrailingNewline = 3
+    } else {
+      const lastIndex = markdown.length - 1
+      if (lastIndex >= 1 && markdown[lastIndex] === '\n' && markdown[lastIndex - 1] === '\n') {
+        // Disabled
+        trimTrailingNewline = 2
+      } else if (markdown[lastIndex] === '\n') {
+        // Ensure single trailing newline
+        trimTrailingNewline = 1
       } else {
-        const lastIndex = markdown.length - 1
-        if (lastIndex >= 1 && markdown[lastIndex] === '\n' && markdown[lastIndex - 1] === '\n') {
-          // Disabled
-          trimTrailingNewline = 2
-        } else if (markdown[lastIndex] === '\n') {
-          // Ensure single trailing newline
-          trimTrailingNewline = 1
-        } else {
-          // Trim trailing newlines
-          trimTrailingNewline = 0
-        }
+        // Trim trailing newlines
+        trimTrailingNewline = 0
       }
     }
-  } else {
-    // When not auto-normalizing, preserve the original line ending format
-    // but still convert to LF internally for the editor (required by MarkText)
-    if (lineEnding !== 'lf') {
-      adjustLineEndingOnSave = true
-      markdown = convertLineEndings(markdown, 'lf')
-    }
-    // When not auto-normalizing and trimTrailingNewline is set to auto-detect (2),
-    // we should use "disabled" (3) to preserve the file exactly as-is
-    trimTrailingNewline = 3
   }
 
   const filename = path.basename(pathname)

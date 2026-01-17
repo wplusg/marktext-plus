@@ -414,7 +414,7 @@
       "items": {
         "autoSave": "Guardar automáticamente el contenido que se está editando",
         "autoSaveDelay": "El tiempo en ms después de un cambio que se guarda el archivo",
-        "autoNormalizeMarkdownOnOpen": "Normalizar automáticamente los finales de línea a LF y opcionalmente las nuevas líneas finales al abrir",
+        "autoNormalizeLineEndings": "Normalizar automáticamente los finales de línea a LF y opcionalmente las nuevas líneas finales al abrir",
         "titleBarStyle": "El estilo de la barra de título (solo sistema Windows y Linux)",
         "openFilesInNewWindow": "Abrir archivos en una nueva ventana",
         "openFolderInNewWindow": "Abrir carpeta vía menú en una nueva ventana",
@@ -594,6 +594,7 @@
         "hideQuickInsertHint": "Ocultar sugerencia de inserción rápida",
         "hideLinkPopup": "Ocultar popup de enlace",
         "autoCheck": "Verificación automática",
+        "autoNormalizeLineEndings": "Normalizar automáticamente los finales de línea a LF al abrir",
         "wrapCodeBlocks": "Ajustar bloques de código"
       }
     },
