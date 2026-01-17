@@ -20,7 +20,7 @@ const getIndentSpace = (text) => {
 
 const enterCtrl = (ContentState) => {
   // TODO@jocs this function need opti.
-  ContentState.prototype.chopBlockByCursor = function (block, key, offset) {
+  ContentState.prototype.chopBlockByCursor = function(block, key, offset) {
     const newBlock = this.createBlock('p')
     const { children } = block
     const index = children.findIndex((child) => child.key === key)
@@ -43,7 +43,7 @@ const enterCtrl = (ContentState) => {
     return newBlock
   }
 
-  ContentState.prototype.chopBlock = function (block) {
+  ContentState.prototype.chopBlock = function(block) {
     const parent = this.getParent(block)
     const type = parent.type
     const container = this.createBlock(type)
@@ -57,7 +57,7 @@ const enterCtrl = (ContentState) => {
     return container
   }
 
-  ContentState.prototype.createRow = function (row, isHeader = false) {
+  ContentState.prototype.createRow = function(row, isHeader = false) {
     const tr = this.createBlock('tr')
     const len = row.children.length
     let i
@@ -76,7 +76,7 @@ const enterCtrl = (ContentState) => {
     return tr
   }
 
-  ContentState.prototype.createBlockLi = function (paragraphInListItem) {
+  ContentState.prototype.createBlockLi = function(paragraphInListItem) {
     const liBlock = this.createBlock('li')
     if (!paragraphInListItem) {
       paragraphInListItem = this.createBlockP()
@@ -85,7 +85,7 @@ const enterCtrl = (ContentState) => {
     return liBlock
   }
 
-  ContentState.prototype.createTaskItemBlock = function (paragraphInListItem, checked = false) {
+  ContentState.prototype.createTaskItemBlock = function(paragraphInListItem, checked = false) {
     const listItem = this.createBlock('li')
     const checkboxInListItem = this.createBlock('input')
 
@@ -100,7 +100,7 @@ const enterCtrl = (ContentState) => {
     return listItem
   }
 
-  ContentState.prototype.enterInEmptyParagraph = function (block) {
+  ContentState.prototype.enterInEmptyParagraph = function(block) {
     if (block.type === 'span') block = this.getParent(block)
     const parent = this.getParent(block)
 
@@ -219,12 +219,13 @@ const enterCtrl = (ContentState) => {
     const offset = 0
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
     return this.partialRender()
   }
 
-  ContentState.prototype.docEnterHandler = function (event) {
+  ContentState.prototype.docEnterHandler = function(event) {
     const { eventCenter } = this.muya
     const { selectedImage } = this
     // Show image selector when you press Enter key and there is already one image selected.
@@ -235,7 +236,7 @@ const enterCtrl = (ContentState) => {
       const imageWrapper = document.querySelector(`#${imageId}`)
       const rect = imageWrapper.getBoundingClientRect()
       const reference = {
-        getBoundingClientRect() {
+        getBoundingClientRect () {
           rect.height = 0 // Put image selector below the top border of image.
           return rect
         }
@@ -250,7 +251,7 @@ const enterCtrl = (ContentState) => {
     }
   }
 
-  ContentState.prototype.enterHandler = function (event) {
+  ContentState.prototype.enterHandler = function(event) {
     const { start, end } = selection.getCursorRange()
     if (!start || !end) {
       return event.preventDefault()
@@ -282,7 +283,8 @@ const enterCtrl = (ContentState) => {
       this.removeBlocks(block, endBlock)
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       this.partialRender()
       return this.enterHandler(event)
@@ -295,7 +297,8 @@ const enterCtrl = (ContentState) => {
       block.text = block.text.substring(0, start.offset) + block.text.substring(end.offset)
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       this.partialRender()
       return this.enterHandler(event)
@@ -316,7 +319,8 @@ const enterCtrl = (ContentState) => {
       const offset = block.text.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.updateFootnote(this.getParent(block), block)
     }
@@ -333,7 +337,8 @@ const enterCtrl = (ContentState) => {
       offset += 1 + indent.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender()
     } else if (block.type === 'span' && block.functionType === 'codeContent') {
@@ -355,7 +360,8 @@ const enterCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender()
     }
@@ -370,7 +376,8 @@ const enterCtrl = (ContentState) => {
       const offset = start.offset + brTag.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender([block])
     }
@@ -425,7 +432,8 @@ const enterCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender()
     }
@@ -624,7 +632,8 @@ const enterCtrl = (ContentState) => {
 
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
 
     let needRenderAll = false

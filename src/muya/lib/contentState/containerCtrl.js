@@ -8,8 +8,12 @@ const FUNCTION_TYPE_LANG = {
   html: 'markup'
 }
 
-const containerCtrl = ContentState => {
-  ContentState.prototype.createContainerBlock = function (functionType, value = '', style = undefined) {
+const containerCtrl = (ContentState) => {
+  ContentState.prototype.createContainerBlock = function (
+    functionType,
+    value = '',
+    style = undefined
+  ) {
     const figureBlock = this.createBlock('figure', {
       functionType
     })
@@ -64,7 +68,8 @@ const containerCtrl = ContentState => {
     return { preBlock, preview }
   }
 
-  ContentState.prototype.initContainerBlock = function (functionType, block, style = undefined) { // p block
+  ContentState.prototype.initContainerBlock = function (functionType, block, style = undefined) {
+    // p block
     block.type = 'figure'
     block.functionType = functionType
     block.children = []
@@ -93,7 +98,8 @@ const containerCtrl = ContentState => {
     const offset = 0
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: false
     }
     this.partialRender()
   }
@@ -114,7 +120,8 @@ const containerCtrl = ContentState => {
           const offset = 0
           this.cursor = {
             start: { key, offset },
-            end: { key, offset }
+            end: { key, offset },
+            isEdit: false
           }
 
           // Force render

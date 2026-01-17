@@ -109,7 +109,8 @@ const paragraphCtrl = (ContentState) => {
     const offset = 0
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
   }
 
@@ -271,7 +272,8 @@ const paragraphCtrl = (ContentState) => {
       const offset = text.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
     } else {
       if (start.key === end.key) {
@@ -309,12 +311,14 @@ const paragraphCtrl = (ContentState) => {
 
           this.cursor = {
             start: { key, offset },
-            end: { key, offset }
+            end: { key, offset },
+            isEdit: true
           }
         } else {
           this.cursor = {
             start: this.cursor.start,
-            end: this.cursor.end
+            end: this.cursor.end,
+            isEdit: true
           }
         }
       } else if (!hasFencedCodeBlockParent()) {
@@ -359,7 +363,8 @@ const paragraphCtrl = (ContentState) => {
         const offset = 0
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
       }
     }
@@ -432,7 +437,8 @@ const paragraphCtrl = (ContentState) => {
     const offset = 0
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
   }
 
@@ -463,7 +469,8 @@ const paragraphCtrl = (ContentState) => {
 
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
   }
 
@@ -618,7 +625,8 @@ const paragraphCtrl = (ContentState) => {
 
         this.cursor = {
           start: { key, offset: startOffset },
-          end: { key, offset: endOffset }
+          end: { key, offset: endOffset },
+          isEdit: true
         }
         break
       }
@@ -645,7 +653,8 @@ const paragraphCtrl = (ContentState) => {
         const offset = 0
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         break
       }
@@ -690,7 +699,8 @@ const paragraphCtrl = (ContentState) => {
     const offset = text.length
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
     this.partialRender()
     this.muya.eventCenter.dispatch('stateChange')
@@ -715,7 +725,8 @@ const paragraphCtrl = (ContentState) => {
     const offset = text.length
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
     this.partialRender()
     return this.muya.eventCenter.dispatch('stateChange')
@@ -755,7 +766,8 @@ const paragraphCtrl = (ContentState) => {
     const offset = text.length
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
     this.partialRender()
     return this.muya.eventCenter.dispatch('stateChange')
@@ -786,7 +798,8 @@ const paragraphCtrl = (ContentState) => {
       end: {
         key: lastTextBlock.key,
         offset: lastTextBlock.text.length
-      }
+      },
+      isEdit: false
     }
 
     return this.render()
@@ -862,7 +875,8 @@ const paragraphCtrl = (ContentState) => {
         end: {
           key,
           offset: startBlock.text.length
-        }
+        },
+        isEdit: false
       }
 
       return this.partialRender()
@@ -877,7 +891,8 @@ const paragraphCtrl = (ContentState) => {
         end: {
           key: startBlock.key,
           offset: startBlock.text.length
-        }
+        },
+        isEdit: false
       }
       return this.partialRender()
     }

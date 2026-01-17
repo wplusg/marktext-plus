@@ -130,7 +130,8 @@ const dragDropCtrl = (ContentState) => {
               const offset = 0
               this.cursor = {
                 start: { key, offset },
-                end: { key, offset }
+                end: { key, offset },
+                isEdit: true
               }
               this.render()
               this.muya.eventCenter.dispatch('stateChange')
@@ -163,7 +164,8 @@ const dragDropCtrl = (ContentState) => {
         const offset = 0
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         this.render()
 

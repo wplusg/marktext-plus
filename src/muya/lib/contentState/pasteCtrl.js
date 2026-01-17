@@ -317,7 +317,8 @@ const pasteCtrl = (ContentState) => {
       const offset = start.offset + text.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
     }
 
@@ -343,7 +344,8 @@ const pasteCtrl = (ContentState) => {
       const key = startBlock.key
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
 
       // Hide code picker float box
@@ -367,7 +369,8 @@ const pasteCtrl = (ContentState) => {
       const offset = start.offset + cleanedText.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
 
       return this.partialRender()
@@ -403,7 +406,8 @@ const pasteCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender()
     }
@@ -577,7 +581,8 @@ const pasteCtrl = (ContentState) => {
       end: {
         key,
         offset
-      }
+      },
+      isEdit: true
     }
     this.checkInlineUpdate(cursorBlock)
     this.partialRender()

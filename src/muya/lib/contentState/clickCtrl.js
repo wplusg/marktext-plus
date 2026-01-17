@@ -42,7 +42,8 @@ const clickCtrl = (ContentState) => {
           const offset = 0
           this.cursor = {
             start: { key, offset },
-            end: { key, offset }
+            end: { key, offset },
+            isEdit: true
           }
 
           return this.render()
@@ -192,7 +193,11 @@ const clickCtrl = (ContentState) => {
       this.checkNeedRender(this.cursor) || this.checkNeedRender({ start, end })
 
     if (needRender) {
-      this.cursor = { start, end }
+      this.cursor = {
+        start,
+        end,
+        isEdit: false
+      }
       return this.partialRender()
     } else if (needMarkedUpdate) {
       // Fix: whole select can not be canceled #613
@@ -206,7 +211,11 @@ const clickCtrl = (ContentState) => {
         return this.partialRender()
       })
     } else {
-      this.cursor = { start, end }
+      this.cursor = {
+        start,
+        end,
+        isEdit: false
+      }
     }
   }
 
@@ -260,7 +269,11 @@ const clickCtrl = (ContentState) => {
     const firstEditableBlock = this.firstInDescendant(parentBlock)
     const { key } = firstEditableBlock
     const offset = 0
-    this.cursor = { start: { key, offset }, end: { key, offset } }
+    this.cursor = {
+      start: { key, offset },
+      end: { key, offset },
+      isEdit: true
+    }
     return this.partialRender()
   }
 }

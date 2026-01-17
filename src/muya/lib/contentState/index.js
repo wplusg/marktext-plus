@@ -155,14 +155,7 @@ class ContentState {
     }
 
     if (!cursor.noHistory) {
-      if (
-        this.prevCursor &&
-        (this.prevCursor.start.key !== cursor.start.key ||
-          this.prevCursor.end.key !== cursor.end.key)
-      ) {
-        // Push history immediately
-        this.history.push(getHistoryState())
-      } else {
+      if (cursor.isEdit) {
         // WORKAROUND: The current engine doesn't support a smart history and we
         // need to store the whole state. Therefore, we push history only when the
         // user stops typing. Pushing one pending entry allows us to commit the
@@ -172,7 +165,10 @@ class ContentState {
 
         this.historyTimer = setTimeout(() => {
           this.history.commitPending()
-        }, 2000)
+        }, 1500)
+      } else {
+        // Push history immediately
+        this.history.push(getHistoryState())
       }
     }
   }
@@ -192,13 +188,14 @@ class ContentState {
     }
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: false
     }
   }
 
   getHistory() {
-    const { stack, index } = this.history
-    return { stack, index }
+    const { stack, index, lastEditIndex } = this.history
+    return { stack, index, lastEditIndex }
   }
 
   setHistory({ stack, index }) {

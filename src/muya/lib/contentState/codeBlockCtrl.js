@@ -80,7 +80,8 @@ const codeBlockCtrl = (ContentState) => {
       const offset = 0
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: false
       }
     } else {
       block.text = block.text.replace(/^(`+)([^`]+$)/g, `$1${lang}`)
@@ -136,7 +137,8 @@ const codeBlockCtrl = (ContentState) => {
       const offset = code.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: false
       }
       return true
     }

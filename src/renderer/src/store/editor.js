@@ -946,7 +946,6 @@ export const useEditorStore = defineStore('editor', {
       const docState = createDocumentState(Object.assign(markdownDocument, options))
       const { id, cursor } = docState
 
-      console.log('received markdown', JSON.stringify(markdown))
       if (selected) {
         this.UPDATE_CURRENT_FILE(docState)
         bus.emit('file-loaded', { id, markdown, cursor })
@@ -1037,11 +1036,11 @@ export const useEditorStore = defineStore('editor', {
         this.toc = listToTree(toc)
       }
 
-      console.trace('LISTEN_FOR_CONTENT_CHANGE: Document changed.')
-      console.log('this.currentFile', JSON.parse(JSON.stringify(this.currentFile)))
-      const diff = markdown.split('').filter((char, i) => char !== oldMarkdown[i])
-      console.log(diff)
-      if (markdown !== oldMarkdown) {
+      if (
+        this.currentFile.history.lastEditIndex >= 0 &&
+        this.currentFile.history.stack[this.currentFile.history.lastEditIndex].id !==
+          this.currentFile.lastSavedHistoryId
+      ) {
         this.currentFile.isSaved = false
         if (pathname && autoSave) {
           const options = getOptionsFromState(this.currentFile)
@@ -1053,7 +1052,7 @@ export const useEditorStore = defineStore('editor', {
             options
           })
         }
-      }
+      } else this.currentFile.isSaved = true // An undo can trigger this
     },
 
     HANDLE_AUTO_SAVE({ id, filename, pathname, markdown, options }) {
@@ -1249,8 +1248,6 @@ export const useEditorStore = defineStore('editor', {
                   return
                 }
               }
-
-              console.log('LISTEN_FOR_FILE_CHANGE: File changed on disk:', pathname)
 
               tab.isSaved = false
               this.pushTabNotification({

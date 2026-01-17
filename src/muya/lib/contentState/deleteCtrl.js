@@ -38,7 +38,8 @@ const deleteCtrl = (ContentState) => {
       startBlock.text = text.substring(2)
       this.cursor = {
         start: { key, offset: 0 },
-        end: { key, offset: 0 }
+        end: { key, offset: 0 },
+        isEdit: true
       }
       return this.singleRender(startBlock)
     }
@@ -109,7 +110,8 @@ const deleteCtrl = (ContentState) => {
         const offset = start.offset
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         this.render()
       }

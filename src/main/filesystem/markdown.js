@@ -111,14 +111,6 @@ export const loadMarkdownFile = async (
 
   let adjustLineEndingOnSave = false
 
-  console.log('detected line ending:', {
-    isLf,
-    isCrlf,
-    isMixedLineEndings,
-    isUnknownEnding,
-    lineEnding
-  })
-
   if (isMixedLineEndings || isUnknownEnding || lineEnding !== 'lf') {
     markdown = convertLineEndings(markdown, 'lf')
     // Marktext always uses LF internally.

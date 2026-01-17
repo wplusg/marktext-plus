@@ -1,4 +1,4 @@
-const linkCtrl = ContentState => {
+const linkCtrl = (ContentState) => {
   /**
    * Change a link into text.
    */
@@ -35,7 +35,8 @@ const linkCtrl = ContentState => {
       end: {
         key,
         offset: +token.range.start + anchor.length
-      }
+      },
+      isEdit: true
     }
 
     this.singleRender(block)

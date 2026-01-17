@@ -101,7 +101,8 @@ export const getBlankFileState = (
     adjustLineEndingOnSave: lineEnding.toLowerCase() === 'crlf',
     id,
     filename: `Untitled-${++untitleId}`,
-    markdown
+    markdown,
+    lastSavedHistoryId: -1
   })
 }
 
@@ -125,7 +126,8 @@ export const getSingleFileState = ({
     encoding,
     lineEnding,
     adjustLineEndingOnSave,
-    trimTrailingNewline
+    trimTrailingNewline,
+    lastSavedHistoryId: -1
   })
 }
 
@@ -158,6 +160,7 @@ export const createDocumentState = (markdownDocument, id = getUniqueId()) => {
     lineEnding,
     cursor,
     adjustLineEndingOnSave,
-    trimTrailingNewline
+    trimTrailingNewline,
+    lastSavedHistoryId: -1
   })
 }

@@ -2,13 +2,13 @@ const calculateAspects = (tableId, barType) => {
   const table = document.querySelector(`#${tableId}`)
   if (barType === 'bottom') {
     const firstRow = table.querySelector('tr')
-    return Array.from(firstRow.children).map(cell => cell.clientWidth)
+    return Array.from(firstRow.children).map((cell) => cell.clientWidth)
   } else {
-    return Array.from(table.querySelectorAll('tr')).map(row => row.clientHeight)
+    return Array.from(table.querySelectorAll('tr')).map((row) => row.clientHeight)
   }
 }
 
-export const getAllTableCells = tableId => {
+export const getAllTableCells = (tableId) => {
   const table = document.querySelector(`#${tableId}`)
   const rows = table.querySelectorAll('tr')
   const cells = []
@@ -57,7 +57,7 @@ const getDragCells = (tableId, barType, index) => {
   return dragCells
 }
 
-const tableDragBarCtrl = ContentState => {
+const tableDragBarCtrl = (ContentState) => {
   ContentState.prototype.handleMouseDown = function (event) {
     event.preventDefault()
     const { eventCenter } = this.muya
@@ -87,7 +87,11 @@ const tableDragBarCtrl = ContentState => {
       }
     }
 
-    const mouseMoveId = eventCenter.attachDOMEvent(document, 'mousemove', this.handleMouseMove.bind(this))
+    const mouseMoveId = eventCenter.attachDOMEvent(
+      document,
+      'mousemove',
+      this.handleMouseMove.bind(this)
+    )
     const mouseUpId = eventCenter.attachDOMEvent(document, 'mouseup', this.handleMouseUp.bind(this))
     this.dragEventIds.push(mouseMoveId, mouseUpId)
   }
@@ -98,7 +102,7 @@ const tableDragBarCtrl = ContentState => {
     }
     const { barType } = this.dragInfo
     const attrName = barType === 'bottom' ? 'clientX' : 'clientY'
-    const offset = this.dragInfo.offset = event[attrName] - this.dragInfo[attrName]
+    const offset = (this.dragInfo.offset = event[attrName] - this.dragInfo[attrName])
     if (Math.abs(offset) < 5) {
       return
     }
@@ -346,7 +350,8 @@ const tableDragBarCtrl = ContentState => {
           end: {
             key,
             offset: end.offset
-          }
+          },
+          isEdit: true
         }
         return this.singleRender(table)
       } else {

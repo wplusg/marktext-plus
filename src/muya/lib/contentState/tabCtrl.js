@@ -36,9 +36,21 @@ const parseSelector = (str = '') => {
   return { tag, id, className, isVoid }
 }
 
-const BOTH_SIDES_FORMATS = ['strong', 'em', 'inline_code', 'image', 'link', 'reference_image', 'reference_link', 'emoji', 'del', 'html_tag', 'inline_math']
+const BOTH_SIDES_FORMATS = [
+  'strong',
+  'em',
+  'inline_code',
+  'image',
+  'link',
+  'reference_image',
+  'reference_link',
+  'emoji',
+  'del',
+  'html_tag',
+  'inline_math'
+]
 
-const tabCtrl = ContentState => {
+const tabCtrl = (ContentState) => {
   ContentState.prototype.findNextCell = function (block) {
     if (block.functionType !== 'cellContent') {
       throw new Error('only th and td can have next cell')
@@ -194,19 +206,24 @@ const tabCtrl = ContentState => {
     const startBlock = this.getBlock(start.key)
     const endBlock = this.getBlock(end.key)
     if (start.key === end.key && start.offset === end.offset) {
-      startBlock.text = startBlock.text.substring(0, start.offset) +
-        tabCharacter + endBlock.text.substring(end.offset)
+      startBlock.text =
+        startBlock.text.substring(0, start.offset) +
+        tabCharacter +
+        endBlock.text.substring(end.offset)
       const key = start.key
       const offset = start.offset + tabCharacter.length
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: false
       }
       return this.partialRender()
-    } else if (start.key === end.key &&
+    } else if (
+      start.key === end.key &&
       start.offset !== end.offset &&
       startBlock.type === 'span' &&
-      startBlock.functionType === 'codeContent') {
+      startBlock.functionType === 'codeContent'
+    ) {
       // 在代码块内
       let nowLen = 0
       let oldText = startBlock.text
@@ -217,7 +234,12 @@ const tabCtrl = ContentState => {
         dealLine = (line) => {
           let i = 0
           for (; i < line.length && i < tabSize; i++) {
-            if (!(line.charAt(i) === String.fromCharCode(160) || line.charAt(i) === String.fromCharCode(32))) {
+            if (
+              !(
+                line.charAt(i) === String.fromCharCode(160) ||
+                line.charAt(i) === String.fromCharCode(32)
+              )
+            ) {
               break
             }
           }
@@ -249,7 +271,8 @@ const tabCtrl = ContentState => {
       let eo = startBlock.text.length - (oldText.length - end.offset)
       this.cursor = {
         start: { key: sk, offset: so },
-        end: { key: ek, offset: eo }
+        end: { key: ek, offset: eo },
+        isEdit: false
       }
       return this.partialRender()
     }
@@ -263,9 +286,20 @@ const tabCtrl = ContentState => {
       options: this.muya.options
     })
     let result = null
-    const walkTokens = tkns => {
+    const walkTokens = (tkns) => {
       for (const token of tkns) {
-        const { marker, type, range, children, srcAndTitle, hrefAndTitle, backlash, closeTag, isFullLink, label } = token
+        const {
+          marker,
+          type,
+          range,
+          children,
+          srcAndTitle,
+          hrefAndTitle,
+          backlash,
+          closeTag,
+          isFullLink,
+          label
+        } = token
         const { start, end } = range
         if (BOTH_SIDES_FORMATS.includes(type) && offset > start && offset < end) {
           switch (type) {
@@ -385,7 +419,8 @@ const tabCtrl = ContentState => {
       if (atEnd) {
         this.cursor = {
           start: { key, offset: offset + atEnd.offset },
-          end: { key, offset: offset + atEnd.offset }
+          end: { key, offset: offset + atEnd.offset },
+          isEdit: false
         }
         return this.partialRender()
       }
@@ -396,7 +431,9 @@ const tabCtrl = ContentState => {
       start.key === end.key &&
       start.offset === end.offset &&
       startBlock.type === 'span' &&
-      (!startBlock.functionType || startBlock.functionType === 'codeContent' && /markup|html|xml|svg|mathml/.test(startBlock.lang))
+      (!startBlock.functionType ||
+        (startBlock.functionType === 'codeContent' &&
+          /markup|html|xml|svg|mathml/.test(startBlock.lang)))
     ) {
       const { text } = startBlock
       const lastWordBeforeCursor = text.substring(0, start.offset).split(/\s+/).pop()
@@ -445,7 +482,8 @@ const tabCtrl = ContentState => {
         startBlock.text = preText + html + postText
         this.cursor = {
           start: { key, offset: startOffset + preText.length },
-          end: { key, offset: endOffset + preText.length }
+          end: { key, offset: endOffset + preText.length },
+          isEdit: false
         }
         return this.partialRender()
       }
@@ -454,9 +492,7 @@ const tabCtrl = ContentState => {
     // Handle `tab` key in table cell.
     let nextCell
     if (start.key === end.key && startBlock.functionType === 'cellContent') {
-      nextCell = event.shiftKey
-        ? this.findPreviousCell(startBlock)
-        : this.findNextCell(startBlock)
+      nextCell = event.shiftKey ? this.findPreviousCell(startBlock) : this.findNextCell(startBlock)
     } else if (endBlock.functionType === 'cellContent') {
       nextCell = endBlock
     }
@@ -466,7 +502,8 @@ const tabCtrl = ContentState => {
       const offset = 0
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: false
       }
 
       const figure = this.closest(nextCell, 'figure')

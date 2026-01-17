@@ -161,7 +161,8 @@ const backspaceCtrl = (ContentState) => {
         startBlock.text = ''
         this.cursor = {
           start: { key: start.key, offset: 0 },
-          end: { key: end.key, offset: 0 }
+          end: { key: end.key, offset: 0 },
+          isEdit: true
         }
         this.updateToParagraph(this.getParent(startBlock), startBlock)
         return this.partialRender()
@@ -201,7 +202,8 @@ const backspaceCtrl = (ContentState) => {
       end.offset--
       this.cursor = {
         start,
-        end
+        end,
+        isEdit: true
       }
       return this.partialRender()
     }
@@ -234,7 +236,8 @@ const backspaceCtrl = (ContentState) => {
         const offset = 0
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         return this.render()
       }
@@ -253,7 +256,8 @@ const backspaceCtrl = (ContentState) => {
       const offset = 0
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
 
       return this.singleRender(startBlock)
@@ -291,7 +295,8 @@ const backspaceCtrl = (ContentState) => {
       }
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.singleRender(startBlock)
     }
@@ -328,7 +333,8 @@ const backspaceCtrl = (ContentState) => {
         const offset = start.offset - 1
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         return this.singleRender(startBlock)
       }
@@ -357,7 +363,8 @@ const backspaceCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.singleRender(startBlock)
     }
@@ -371,7 +378,8 @@ const backspaceCtrl = (ContentState) => {
       const offset = 0
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
 
       return this.singleRender(startBlock)
@@ -405,7 +413,8 @@ const backspaceCtrl = (ContentState) => {
         const offset = 0
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
 
         this.partialRender()
@@ -447,7 +456,8 @@ const backspaceCtrl = (ContentState) => {
 
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
         this.partialRender()
       }
@@ -477,7 +487,8 @@ const backspaceCtrl = (ContentState) => {
       if (key !== undefined && offset !== undefined) {
         this.cursor = {
           start: { key, offset },
-          end: { key, offset }
+          end: { key, offset },
+          isEdit: true
         }
 
         this.partialRender()
@@ -629,7 +640,8 @@ const backspaceCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
 
       if (inlineDegrade.type !== 'STOP') {
@@ -651,7 +663,8 @@ const backspaceCtrl = (ContentState) => {
 
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       let needRenderAll = false
 

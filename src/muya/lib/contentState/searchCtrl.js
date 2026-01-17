@@ -33,7 +33,7 @@ const matchString = (text, value, options) => {
   }
 }
 
-const searchCtrl = ContentState => {
+const searchCtrl = (ContentState) => {
   ContentState.prototype.buildRegexValue = function (match, value) {
     const groups = value.match(/(?<!\\)\$\d/g)
 
@@ -97,11 +97,12 @@ const searchCtrl = ContentState => {
       end: {
         key,
         offset: end
-      }
+      },
+      istEdit: false
     }
   }
 
-  ContentState.prototype.find = function (action/* prev next */) {
+  ContentState.prototype.find = function (action /* prev next */) {
     let { matches, index } = this.searchMatches
     const len = matches.length
     if (!len) return
@@ -118,21 +119,23 @@ const searchCtrl = ContentState => {
     const options = Object.assign({}, defaultSearchOption, opt)
     const { highlightIndex } = options
     const { blocks } = this
-    const travel = blocks => {
+    const travel = (blocks) => {
       for (const block of blocks) {
         let { text, key } = block
 
         if (text && typeof text === 'string') {
           const strMatches = matchString(text, value, options)
-          matches.push(...strMatches.map(({ index, match, subMatches }) => {
-            return {
-              key,
-              start: index,
-              end: index + match.length,
-              match,
-              subMatches
-            }
-          }))
+          matches.push(
+            ...strMatches.map(({ index, match, subMatches }) => {
+              return {
+                key,
+                start: index,
+                end: index + match.length,
+                match,
+                subMatches
+              }
+            })
+          )
         }
         if (block.children.length) {
           travel(block.children)

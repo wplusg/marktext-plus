@@ -1,6 +1,6 @@
 import { tokenizer, generator } from '../parser/'
 
-const emojiCtrl = ContentState => {
+const emojiCtrl = (ContentState) => {
   ContentState.prototype.setEmoji = function (item) {
     let { key, offset } = this.cursor.start
     const startBlock = this.getBlock(key)
@@ -31,7 +31,8 @@ const emojiCtrl = ContentState => {
       startBlock.text = generator(tokens)
       this.cursor = {
         start: { key, offset },
-        end: { key, offset }
+        end: { key, offset },
+        isEdit: true
       }
       return this.partialRender()
     }

@@ -175,7 +175,8 @@ const updateCtrl = (ContentState) => {
     const endOffset = end.offset - preParagraphLength
     this.cursor = {
       start: { key, offset: startOffset },
-      end: { key, offset: endOffset }
+      end: { key, offset: endOffset },
+      isEdit: true
     }
     return thematicBlock
   }
@@ -296,7 +297,8 @@ const updateCtrl = (ContentState) => {
       end: {
         key,
         offset: Math.max(0, endOffset - delta)
-      }
+      },
+      isEdit: true
     }
     if (TASK_LIST_REG.test(listItemText)) {
       const [, , tasklist, , , ,] = listItemText.match(INLINE_UPDATE_REG) || []
@@ -369,7 +371,8 @@ const updateCtrl = (ContentState) => {
       end: {
         key: end.key,
         offset: Math.max(0, end.offset - marker.length)
-      }
+      },
+      isEdit: true
     }
     return taskListWrapper || grandpa
   }
@@ -423,7 +426,8 @@ const updateCtrl = (ContentState) => {
     const key = atxBlock.children[0].key
     this.cursor = {
       start: { key, offset: start.offset },
-      end: { key, offset: end.offset }
+      end: { key, offset: end.offset },
+      isEdit: true
     }
     return atxBlock
   }
@@ -474,7 +478,8 @@ const updateCtrl = (ContentState) => {
 
     this.cursor = {
       start: { key, offset },
-      end: { key, offset }
+      end: { key, offset },
+      isEdit: true
     }
 
     return setextBlock
@@ -530,7 +535,8 @@ const updateCtrl = (ContentState) => {
 
     this.cursor = {
       start: { key, offset: Math.max(0, start.offset - 1) },
-      end: { key, offset: Math.max(0, end.offset - 1) }
+      end: { key, offset: Math.max(0, end.offset - 1) },
+      isEdit: true
     }
     return quoteBlock
   }
@@ -588,7 +594,8 @@ const updateCtrl = (ContentState) => {
     const { start, end } = this.cursor
     this.cursor = {
       start: { key, offset: start.offset - 4 },
-      end: { key, offset: end.offset - 4 }
+      end: { key, offset: end.offset - 4 },
+      isEdit: true
     }
     return preBlock
   }
@@ -607,7 +614,8 @@ const updateCtrl = (ContentState) => {
       const key = newBlock.children[0].key
       this.cursor = {
         start: { key, offset: start.offset },
-        end: { key, offset: end.offset }
+        end: { key, offset: end.offset },
+        isEdit: true
       }
       return block
     }

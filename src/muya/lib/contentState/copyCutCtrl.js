@@ -41,7 +41,8 @@ const copyCutCtrl = (ContentState) => {
     }
     this.cursor = {
       start,
-      end: start
+      end: start,
+      isEdit: true
     }
     this.checkInlineUpdate(startBlock)
     this.partialRender()
