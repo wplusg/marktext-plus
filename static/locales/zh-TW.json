@@ -1124,9 +1124,6 @@
       "exportSuccessMessage": "已成功匯出「{name}」！",
       "fileRemovedOnDisk": "「{name}」已在磁碟上被刪除。",
       "fileChangedOnDisk": "「{name}」已在磁碟上發生變更。是否重新載入？"
-    },
-    "help": {
-      "lineEndingAssertionError": "行結束符斷言錯誤"
     }
   },
   "spellchecker": {

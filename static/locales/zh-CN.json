@@ -1131,9 +1131,6 @@
       "exportSuccessMessage": "已成功导出“{name}”！",
       "fileRemovedOnDisk": "“{name}” 已在磁盘上被删除。",
       "fileChangedOnDisk": "“{name}” 已在磁盘上发生变更。是否重新加载？"
-    },
-    "help": {
-      "lineEndingAssertionError": "行结束符断言错误"
     }
   },
   "spellchecker": {

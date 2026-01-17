@@ -1122,9 +1122,6 @@
       "exportSuccessMessage": "¡Se exportó «{name}» correctamente!",
       "fileRemovedOnDisk": "«{name}» ha sido eliminado del disco.",
       "fileChangedOnDisk": "«{name}» ha cambiado en el disco. ¿Deseas recargarlo?"
-    },
-    "help": {
-      "lineEndingAssertionError": "Error de aserción de final de línea"
     }
   },
   "spellchecker": {

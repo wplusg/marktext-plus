@@ -58,8 +58,6 @@ export const getFileStateFromData = (data) => {
   } = data
   const id = getUniqueId()
 
-  assertLineEnding(adjustLineEndingOnSave, lineEnding)
-
   return Object.assign(fileState, {
     id,
     markdown,
@@ -119,8 +117,6 @@ export const getSingleFileState = ({
   const fileState = deepClone(defaultFileState)
   const { encoding, lineEnding, adjustLineEndingOnSave, trimTrailingNewline } = options
 
-  assertLineEnding(adjustLineEndingOnSave, lineEnding)
-
   return Object.assign(fileState, {
     id,
     markdown,
@@ -153,8 +149,6 @@ export const createDocumentState = (markdownDocument, id = getUniqueId()) => {
     cursor = null
   } = markdownDocument
 
-  assertLineEnding(adjustLineEndingOnSave, lineEnding)
-
   return Object.assign(docState, {
     id,
     markdown,
@@ -166,14 +160,4 @@ export const createDocumentState = (markdownDocument, id = getUniqueId()) => {
     adjustLineEndingOnSave,
     trimTrailingNewline
   })
-}
-
-const assertLineEnding = (adjustLineEndingOnSave, lineEnding) => {
-  lineEnding = lineEnding.toLowerCase()
-  if (
-    (adjustLineEndingOnSave && lineEnding !== 'crlf') ||
-    (!adjustLineEndingOnSave && lineEnding === 'crlf')
-  ) {
-    console.error(i18n.global.t('store.help.lineEndingAssertionError'))
-  }
 }

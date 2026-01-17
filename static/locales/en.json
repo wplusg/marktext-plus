@@ -1129,9 +1129,6 @@
       "exportSuccessMessage": "Exported \"{name}\" successfully!",
       "fileRemovedOnDisk": "\"{name}\" has been removed on disk.",
       "fileChangedOnDisk": "\"{name}\" has been changed on disk. Do you want to reload it?"
-    },
-    "help": {
-      "lineEndingAssertionError": "Line ending assertion error"
     }
   },
   "spellchecker": {

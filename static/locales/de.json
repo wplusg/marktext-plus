@@ -1122,9 +1122,6 @@
       "exportSuccessMessage": "„{name}“ wurde erfolgreich exportiert!",
       "fileRemovedOnDisk": "„{name}“ wurde auf dem Datenträger gelöscht.",
       "fileChangedOnDisk": "„{name}“ wurde auf dem Datenträger geändert. Möchten Sie neu laden?"
-    },
-    "help": {
-      "lineEndingAssertionError": "Zeilenendezeichen-Assertion-Fehler"
     }
   },
   "spellchecker": {

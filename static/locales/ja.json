@@ -1124,9 +1124,6 @@
       "exportSuccessMessage": "「{name}」を正常にエクスポートしました！",
       "fileRemovedOnDisk": "「{name}」はディスク上で削除されました。",
       "fileChangedOnDisk": "「{name}」はディスク上で変更されました。再読み込みしますか？"
-    },
-    "help": {
-      "lineEndingAssertionError": "改行コードアサーションエラー"
     }
   },
   "spellchecker": {

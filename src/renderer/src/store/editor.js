@@ -1038,9 +1038,7 @@ export const useEditorStore = defineStore('editor', {
       }
 
       console.trace('LISTEN_FOR_CONTENT_CHANGE: Document changed.')
-      console.log('markdown === oldMarkdown?', markdown === oldMarkdown)
-      console.log('markdown', JSON.stringify(markdown))
-      console.log('oldMarkdown', JSON.stringify(oldMarkdown))
+      console.log('this.currentFile', JSON.parse(JSON.stringify(this.currentFile)))
       const diff = markdown.split('').filter((char, i) => char !== oldMarkdown[i])
       console.log(diff)
       if (markdown !== oldMarkdown) {
