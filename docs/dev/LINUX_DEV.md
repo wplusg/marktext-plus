@@ -9,17 +9,19 @@
 
 ## Pre-requisites
 
-- Node.js (`22.19.0`)
+- 
 - Ubuntu Packages: `git`, `build-essential` and `xorg-dev`
 
 ### 1. Install System Packages
 
 for ubuntu
+
 ```bash
 sudo apt update && sudo apt install -y git build-essential xorg-dev
 ```
 
 for fedora
+
 ```bash
 sudo dnf install -y xorg-x11-server-devel libxkbfile-devel
 ```
