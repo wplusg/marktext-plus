@@ -349,6 +349,7 @@ export const useEditorStore = defineStore('editor', {
       window.electron.ipcRenderer.on('mt::tab-saved', (_, tabId) => {
         const tab = this.tabs.find((f) => f.id === tabId)
         if (tab) {
+          tab.lastSavedHistoryId = tab.history.stack[tab.history.lastEditIndex].id
           tab.isSaved = true
         }
       })
