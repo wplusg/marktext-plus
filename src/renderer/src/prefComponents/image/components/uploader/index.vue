@@ -233,7 +233,7 @@ const legalNoticesErrorStates = reactive({
 })
 
 // computed
-const { currentUploader, imageBed, prefGithubToken, prefCliScript } = storeToRefs(preferenceStore)
+const { currentUploader, imageBed, githubToken: prefGithubToken, cliScript: prefCliScript } = storeToRefs(preferenceStore)
 
 const githubDisable = computed(() => !githubToken.value || !github.owner || !github.repo)
 const cliScriptDisable = computed(() => {
@@ -512,7 +512,7 @@ const save = (type) => {
     return
   }
 
-  const newImageBedConfig = { ...imageBed.value }
+  const newImageBedConfig = JSON.parse(JSON.stringify(imageBed.value))
   if (type === 'github') {
     newImageBedConfig.github = { ...github }
   } else if (type === 'cliScript') {
@@ -1199,3 +1199,4 @@ const validate = (value) => {
   border: 1px solid var(--deleteColor);
 }
 </style>
+
