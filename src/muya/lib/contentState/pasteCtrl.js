@@ -47,21 +47,28 @@ const pasteCtrl = (ContentState) => {
 
   // Try to identify the data type.
   ContentState.prototype.checkCopyType = function (html, rawText) {
-    let type = 'copyAsMarkdown'
-    const match = /^<([a-zA-Z\d-]+)(?=\s|>).*?>[\s\S]+?<\/([a-zA-Z\d-]+)>$/.exec(rawText.trim())
-    if (match && match[1]) {
-      const tag = match[1]
-      if (tag === 'table' && match.length === 3 && match[2] === 'table') {
-        // Try to import a single table
-        const tmp = document.createElement('table')
-        tmp.innerHTML = sanitize(rawText, PREVIEW_DOMPURIFY_CONFIG, false)
-        if (tmp.childElementCount === 1) {
-          return 'htmlToMd'
+    let type = 'normal'
+    console.log('html', html)
+    console.log('rawText', rawText)
+    // Only raw text present, check if it is HTML
+    if (!html && rawText) {
+      type = 'onlyMarkdown'
+      // Check if this should be treated as HTML entirely.
+      const match = /^<([a-zA-Z\d-]+)(?=\s|>).*?>[\s\S]+?<\/([a-zA-Z\d-]+)>$/.exec(rawText.trim())
+      if (match && match[1]) {
+        const tag = match[1]
+        if (tag === 'table' && match.length === 3 && match[2] === 'table') {
+          // Try to import a single table
+          const tmp = document.createElement('table')
+          tmp.innerHTML = sanitize(rawText, PREVIEW_DOMPURIFY_CONFIG, false)
+          if (tmp.childElementCount === 1) {
+            return 'htmlToMd'
+          }
         }
-      }
 
-      // TODO: We could try to import HTML elements such as headings, text and lists to markdown for better UX.
-      type = PARAGRAPH_TYPES.find((type) => type === tag) ? 'copyAsHtml' : type
+        // TODO: We could try to import HTML elements such as headings, text and lists to markdown for better UX.
+        type = PARAGRAPH_TYPES.find((type) => type === tag) ? 'copyAsHtml' : type
+      }
     }
 
     return type
@@ -287,6 +294,7 @@ const pasteCtrl = (ContentState) => {
     html = await this.standardizeHTML(html)
 
     let copyType = this.checkCopyType(html, text)
+    console.log('Determined copy type:', copyType)
     const { start, end } = this.cursor
     const startBlock = this.getBlock(start.key)
     const endBlock = this.getBlock(end.key)
@@ -446,7 +454,7 @@ const pasteCtrl = (ContentState) => {
     }
 
     const stateFragments =
-      type === 'pasteAsPlainText' || copyType === 'copyAsMarkdown'
+      type === 'pasteAsPlainText' || copyType === 'onlyMarkdown'
         ? this.markdownToState(text)
         : this.html2State(html)
 

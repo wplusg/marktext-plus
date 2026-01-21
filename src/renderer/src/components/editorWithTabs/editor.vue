@@ -652,7 +652,7 @@ const handleSelectAll = () => {
   }
 }
 
-// Custom copyAsMarkdown copyAsHtml pasteAsPlainText
+// Custom copyAsRich copyAsHtml pasteAsPlainText
 const handleCopyPaste = (type) => {
   if (editor.value) {
     editor.value[type]()
@@ -1058,7 +1058,7 @@ onMounted(() => {
   bus.on('file-changed', handleFileChange)
   bus.on('editor-blur', blurEditor)
   bus.on('editor-focus', focusEditor)
-  bus.on('copyAsMarkdown', handleCopyPaste)
+  bus.on('copyAsRich', handleCopyPaste)
   bus.on('copyAsHtml', handleCopyPaste)
   bus.on('pasteAsPlainText', handleCopyPaste)
   bus.on('duplicate', handleParagraph)
@@ -1170,7 +1170,7 @@ onBeforeUnmount(() => {
   bus.off('file-changed', handleFileChange)
   bus.off('editor-blur', blurEditor)
   bus.off('editor-focus', focusEditor)
-  bus.off('copyAsMarkdown', handleCopyPaste)
+  bus.off('copyAsRich', handleCopyPaste)
   bus.off('copyAsHtml', handleCopyPaste)
   bus.off('pasteAsPlainText', handleCopyPaste)
   bus.off('duplicate', handleParagraph)

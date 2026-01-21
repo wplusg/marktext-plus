@@ -316,14 +316,14 @@ const copyCutCtrl = (ContentState) => {
     switch (type) {
       case 'normal': {
         if (text.length > 0) {
-          event.clipboardData.setData('text/html', html)
+          event.clipboardData.setData('text/html', '')
           event.clipboardData.setData('text/plain', text)
         }
         break
       }
-      case 'copyAsMarkdown': {
+      case 'copyAsRich': {
         if (text.length > 0) {
-          event.clipboardData.setData('text/html', '')
+          event.clipboardData.setData('text/html', html)
           event.clipboardData.setData('text/plain', text)
         }
         break

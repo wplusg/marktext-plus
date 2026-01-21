@@ -403,8 +403,8 @@ class Muya {
     return this.contentState.extractImages(markdown)
   }
 
-  copyAsMarkdown() {
-    this.clipboard.copyAsMarkdown()
+  copyAsRich() {
+    this.clipboard.copyAsRich()
   }
 
   copyAsHtml() {

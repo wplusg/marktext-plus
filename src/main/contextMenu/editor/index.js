@@ -3,7 +3,7 @@ import {
   getCUT,
   getCOPY,
   getPASTE,
-  getCOPY_AS_MARKDOWN,
+  getCOPY_AS_RICH,
   getCOPY_AS_HTML,
   getPASTE_AS_PLAIN_TEXT,
   SEPARATOR,
@@ -22,7 +22,7 @@ const getContextItems = () => [
   getCOPY(),
   getPASTE(),
   SEPARATOR,
-  getCOPY_AS_MARKDOWN(),
+  getCOPY_AS_RICH(),
   getCOPY_AS_HTML(),
   getPASTE_AS_PLAIN_TEXT()
 ]
@@ -70,7 +70,7 @@ export const showEditorContextMenu = (win, event, params, isSpellcheckerEnabled)
     }
 
     const contextItems = getContextItems()
-    const copyItems = [contextItems[3], contextItems[4], contextItems[8], contextItems[7]] // CUT, COPY, COPY_AS_HTML, COPY_AS_MARKDOWN
+    const copyItems = [contextItems[3], contextItems[4], contextItems[8], contextItems[7]] // CUT, COPY, COPY_AS_HTML, COPY_AS_RICH
     copyItems.forEach((item) => {
       item.enabled = canCopy
     })
