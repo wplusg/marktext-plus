@@ -18,11 +18,9 @@ function loadTranslations(language) {
   }
 
   try {
-    // 尝试多个可能的路径
-
     // Since this script is used in both main and preload processes, we can't use global.__static directly here since it is only for the main process
     const localePath =
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV === 'development' || process.env.PERF_TESTING === 'true'
         ? path.join(process.cwd(), 'static', 'locales', `${language}.min.json`)
         : path.join(process.resourcesPath, 'static', 'locales', `${language}.min.json`)
 

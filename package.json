@@ -8,16 +8,17 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
-    "start": "electron-vite preview",
-    "perf:inspect": "electron-vite --inspect=5858",
     "minify-locales": "node scripts/minify-locales.mjs",
     "rebuild-native": "npx @electron/rebuild -f",
+    "start": "electron-vite start",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "build:unpack": "npm run minify-locales && npm run build",
     "build:win": "npm run minify-locales && npx @electron/rebuild && npm run build && electron-builder --win --publish never",
     "build:mac": "npm run minify-locales && npx @electron/rebuild && npm run build && electron-builder --mac --publish never",
-    "build:linux": "npm run minify-locales && npx @electron/rebuild && npm run build && electron-builder --linux --publish never"
+    "build:linux": "npm run minify-locales && npx @electron/rebuild && npm run build && electron-builder --linux --publish never",
+    "perf:inspect": "cross-env PERF_TESTING=true electron-vite preview -- --inspect=5858",
+    "perf:inspect-brk": "cross-env PERF_TESTING=true electron-vite preview -- --inspect-brk=5858"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",

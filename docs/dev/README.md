@@ -67,6 +67,7 @@ $ npm run build:linux
 
 ## 2. Sub-sections
 
+- [Performance testing](PERFORMANCE.md)
 - [Project architecture](ARCHITECTURE.md)
 - [Build instructions](BUILD.md)
 - [Debugging](DEBUGGING.md)
