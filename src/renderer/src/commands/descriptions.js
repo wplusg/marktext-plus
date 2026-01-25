@@ -225,8 +225,5 @@ const COMMAND_KEY_MAP = {
  */
 export default (id) => {
   // 每次调用都重新获取命令描述，以支持动态语言切换
-  const description = t(COMMAND_KEY_MAP[id])
-
-  // 如果找不到对应的描述，返回原始ID用于调试
-  return description || id
+  return id in COMMAND_KEY_MAP ? t(COMMAND_KEY_MAP[id]) : id
 }
