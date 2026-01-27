@@ -48,8 +48,6 @@ const pasteCtrl = (ContentState) => {
   // Try to identify the data type.
   ContentState.prototype.checkCopyType = function (html, rawText) {
     let type = 'normal'
-    console.log('html', html)
-    console.log('rawText', rawText)
     // Only raw text present, check if it is HTML
     if (!html && rawText) {
       type = 'onlyMarkdown'
@@ -294,7 +292,6 @@ const pasteCtrl = (ContentState) => {
     html = await this.standardizeHTML(html)
 
     let copyType = this.checkCopyType(html, text)
-    console.log('Determined copy type:', copyType)
     const { start, end } = this.cursor
     const startBlock = this.getBlock(start.key)
     const endBlock = this.getBlock(end.key)
