@@ -89,8 +89,12 @@ jobs:
             - This is a pre-release build of MarkText, it will most likely contain bugs and unfinished features.
 
             ## ⚠️ Note for MacOS Users
-            - MacOS releases will show a "`MarkText is damaged and can't be opened`" due to a **lack of notorisation**. 
-            - Please see [this fix here](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300) (which also applies to any other app that lacks a Developer Account signing) 
+            - MacOS releases will show a "`Apple couldn't verify MarkText is free of viruses...`" due to a **lack of notorisation**. 
+            - Please run the following commands [based off this fix here](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300) after you have dragged MarkText into the "Applications" folder
+            ```
+            xattr -cr /Applications/marktext.app
+            sudo codesign --force --deep --sign - /Applications/marktext.app
+            ```
 
             ## Changes
           files: |
