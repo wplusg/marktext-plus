@@ -671,6 +671,9 @@ export const useEditorStore = defineStore('editor', {
       window.electron.ipcRenderer.on('mt::switch-tab-by-index', (_, index) => {
         this.SWITCH_TAB_BY_INDEX(index)
       })
+      window.electron.ipcRenderer.on('mt::switch-tab-by-file_path', (_, filePath) => {
+        this.SWITCH_TAB_BY_FILEPATH(filePath)
+      })
     },
 
     FORCE_CLOSE_TAB(file) {
@@ -854,6 +857,22 @@ export const useEditorStore = defineStore('editor', {
       }
 
       this.UPDATE_CURRENT_FILE(nextTab)
+    },
+
+    SWITCH_TAB_BY_FILEPATH(filePath) {
+      const { tabs } = this
+
+      if (!filePath) {
+        console.warn('Invalid file path:', filePath)
+        return
+      }
+
+      const nextTabIndex = tabs.findIndex((t) => t.pathname === filePath)
+      if (nextTabIndex === -1) {
+        console.error('Cannot find tab with pathname:', filePath)
+        return
+      }
+      this.UPDATE_CURRENT_FILE(tabs[nextTabIndex])
     },
 
     SWITCH_TAB_BY_INDEX(nextTabIndex) {
