@@ -28,11 +28,19 @@ export const useEditorStore = defineStore('editor', {
   state: () => ({
     currentFile: {},
     tabs: [],
+    tabIdToIndex: {},
     listToc: [], // Used for equal check and for searching for the correct github-slug to jump to
     toc: []
   }),
 
   actions: {
+    updateTabIdToIndex() {
+      this.tabIdToIndex = this.tabs.reduce((map, tab, index) => {
+        map[tab.id] = index
+        return map
+      }, {})
+    },
+
     /**
      * Copies the specified heading's github-slug to the clipboard.
      * @param {string} id The heading-id to copy.
@@ -536,6 +544,7 @@ export const useEditorStore = defineStore('editor', {
 
       if (!this.tabs.some((file) => file.id === currentFile.id)) {
         this.tabs.push(currentFile)
+        this.updateTabIdToIndex()
       }
       this.UPDATE_LINE_ENDING_MENU()
     },
@@ -681,6 +690,7 @@ export const useEditorStore = defineStore('editor', {
       const index = tabs.findIndex((t) => t.id === file.id)
       if (index > -1) {
         tabs.splice(index, 1)
+        this.updateTabIdToIndex()
       }
 
       if (file.id && autoSaveTimers.has(file.id)) {
@@ -795,6 +805,7 @@ export const useEditorStore = defineStore('editor', {
         this.listToc = []
         this.toc = []
       }
+      this.updateTabIdToIndex()
     },
 
     EXCHANGE_TABS_BY_ID(tabIDs) {
@@ -821,6 +832,7 @@ export const useEditorStore = defineStore('editor', {
         const realToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex
         moveItem(tabs, fromIndex, realToIndex)
       }
+      this.updateTabIdToIndex()
     },
 
     RENAME_FILE(file) {
@@ -920,6 +932,7 @@ export const useEditorStore = defineStore('editor', {
         bus.emit('file-loaded', { id, markdown })
       } else {
         this.tabs.push(fileState)
+        this.updateTabIdToIndex()
       }
     },
 
@@ -971,6 +984,7 @@ export const useEditorStore = defineStore('editor', {
         bus.emit('file-loaded', { id, markdown, cursor })
       } else {
         this.tabs.push(docState)
+        this.updateTabIdToIndex()
       }
 
       if (isMixedLineEndings) {
@@ -1003,6 +1017,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     // Content change from realtime preview editor and source code editor
+    // There is a chance that this event is fired AFTER the tab is switched.
     LISTEN_FOR_CONTENT_CHANGE({
       id,
       markdown,
@@ -1015,64 +1030,54 @@ export const useEditorStore = defineStore('editor', {
     }) {
       const preferencesStore = usePreferencesStore()
       const { autoSave } = preferencesStore
-      const {
-        id: currentId,
-        filename,
-        pathname,
-        markdown: oldMarkdown,
-        trimTrailingNewline
-      } = this.currentFile
 
       if (!id) {
         throw new Error('Listen for document change but id was not set!')
-      } else if (!currentId || this.tabs.length === 0) {
+      } else if (this.tabs.length === 0) {
         return
-      } else if (id !== 'muya' && currentId !== id) {
-        for (const tab of this.tabs) {
-          if (tab.id && tab.id === id) {
-            tab.markdown = adjustTrailingNewlines(markdown, tab.trimTrailingNewline)
-            if (cursor) tab.cursor = cursor
-            if (history) tab.history = history
-            break
-          }
-        }
-        return
+      } else if (!(id in this.tabIdToIndex)) {
+        throw new Error(`Cannot find tab with id "${id}" in tab list!`)
       }
 
+      const tab = this.tabs[this.tabIdToIndex[id]]
+
+      const { filename, pathname, markdown: oldMarkdown, trimTrailingNewline } = tab
+
       markdown = adjustTrailingNewlines(markdown, trimTrailingNewline)
-      this.currentFile.markdown = markdown
+      tab.markdown = markdown
 
       if (oldMarkdown.length === 0 && markdown.length === 1 && markdown[0] === '\n') {
         return
       }
 
-      if (wordCount) this.currentFile.wordCount = wordCount
-      if (cursor) this.currentFile.cursor = cursor
-      if (muyaIndexCursor) this.currentFile.muyaIndexCursor = muyaIndexCursor
-      if (history) this.currentFile.history = history
-      if (blocks) this.currentFile.blocks = blocks
-      if (toc && !equal(toc, this.listToc)) {
+      if (wordCount) tab.wordCount = wordCount
+      if (cursor) tab.cursor = cursor
+      if (muyaIndexCursor) tab.muyaIndexCursor = muyaIndexCursor
+      if (history) tab.history = history
+      if (blocks) tab.blocks = blocks
+
+      // Only update TOC if it's the current file
+      if (id === this.currentFile.id && toc && !equal(toc, this.listToc)) {
         this.listToc = toc
         this.toc = listToTree(toc)
       }
 
       if (
-        this.currentFile.history.lastEditIndex >= 0 &&
-        this.currentFile.history.stack[this.currentFile.history.lastEditIndex].id !==
-          this.currentFile.lastSavedHistoryId
+        tab.history.lastEditIndex >= 0 &&
+        tab.history.stack[tab.history.lastEditIndex].id !== tab.lastSavedHistoryId
       ) {
-        this.currentFile.isSaved = false
+        tab.isSaved = false
         if (pathname && autoSave) {
-          const options = getOptionsFromState(this.currentFile)
+          const options = getOptionsFromState(tab)
           this.HANDLE_AUTO_SAVE({
-            id: currentId,
+            id,
             filename,
             pathname,
             markdown,
             options
           })
         }
-      } else this.currentFile.isSaved = true // An undo can trigger this
+      } else tab.isSaved = true // An undo can trigger this
     },
 
     HANDLE_AUTO_SAVE({ id, filename, pathname, markdown, options }) {

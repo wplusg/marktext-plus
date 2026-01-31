@@ -196,10 +196,12 @@ class Muya {
     let finalCursor = null
 
     if (blocks && cursor) {
+      console.log('setting blocks directly')
       // We have blocks and a cursor, so we can set the blocks and the cursor in the contentState.
       finalCursor = cursor
-      this.contentState.setBlocks(blocks)
+      this.contentState.setBlocks(JSON.parse(JSON.stringify(blocks)))
     } else if (muyaIndexCursor && muyaIndexCursor.anchor && muyaIndexCursor.focus) {
+      console.log('setting muyaIndexCursor directly')
       // We do not have a cursor, but we have a muyaIndexCursor, which is not based on a block key.
       // We need to convert the muyaIndexCursor to a cursor, so we can set it in the contentState.
 
@@ -215,10 +217,12 @@ class Muya {
 
       finalCursor = this.contentState.convertMuyaIndexCursortoCursor(muyaIndexCursor)
     } else {
+      console.log('no cursor defined')
       // No cursor defined, we can just parse the markdown
       this.contentState.importMarkdown(markdown)
     }
 
+    console.log('finalCursor', JSON.parse(JSON.stringify(finalCursor)))
     this.contentState.importCursor(finalCursor)
     this.contentState.render(isRenderCursor)
     setTimeout(() => {

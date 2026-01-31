@@ -1072,10 +1072,14 @@ onMounted(() => {
   bus.on('replace-misspelling', replaceMisspelling)
 
   editor.value.on('change', (changes) => {
-    // WORKAROUND: "id: 'muya',
-    editorStore.LISTEN_FOR_CONTENT_CHANGE(
-      Object.assign(changes, { id: 'muya', blocks: editor.value.contentState.getBlocks() })
-    )
+    // There is a chance that this event is fired AFTER the tab is switched. If we purely rely on this.currentFile later on
+    // it can cause invalid updates. Hence, we need the id to identify changes as part of each tab
+    const { id } = currentFile.value
+    if (id) {
+      editorStore.LISTEN_FOR_CONTENT_CHANGE(
+        Object.assign(changes, { id, blocks: editor.value.contentState.getBlocks() })
+      )
+    }
   })
 
   editor.value.on('scroll', (scroll) => {
