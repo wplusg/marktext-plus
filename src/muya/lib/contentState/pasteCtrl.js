@@ -279,8 +279,9 @@ const pasteCtrl = (ContentState) => {
     event.preventDefault()
     event.stopPropagation()
 
-    const text = rawText || event.clipboardData.getData('text/plain')
-    let html = rawHtml || event.clipboardData.getData('text/html')
+    // Normalise /r/n to /n to avoid errors with Muya's parsing
+    const text = (rawText || event.clipboardData.getData('text/plain')).replace(/\r/g, '')
+    let html = (rawHtml || event.clipboardData.getData('text/html')).replace(/\r/g, '')
 
     // Support pasted URLs from Firefox.
     if (URL_REG.test(text) && !/\s/.test(text) && !html) {
@@ -540,7 +541,7 @@ const pasteCtrl = (ContentState) => {
             startBlock.text += lines[0]
             if (lines.length > 1) {
               const pBlock = this.createBlockP(lines.slice(1).join('\n'))
-              this.insertAfter(parent, pBlock)
+              this.insertAfter(pBlock, parent)
               target = pBlock
             }
           } else {
