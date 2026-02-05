@@ -43,8 +43,6 @@
   
   - See [my motivation below](#1-soo-is-this-fork-any-different-from-the-countless-others)
 
-- You can read more about my motivation below
-
 # 1. Installing
 
 > ⚠️ These releases are still in **beta** (since I do not know how much stuff I might have broken during the migration). Please report any bugs in the [issue tracker](https://github.com/Tkaixiang/marktext/issues)
