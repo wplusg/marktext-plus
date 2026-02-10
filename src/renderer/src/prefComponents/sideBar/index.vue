@@ -4,7 +4,7 @@
     <section class="search-wrapper">
       <el-autocomplete
         v-model="state"
-        class="pref-autocomplete"
+        popper-class="pref-autocomplete"
         :fetch-suggestions="querySearch"
         :placeholder="t('preferences.search.placeholder')"
         :trigger-on-focus="false"
@@ -74,8 +74,10 @@ const createFilter = (queryString) => {
       restaurant.category,
       restaurant.preferenceEn,
       restaurant.categoryEn
-    ].filter(Boolean).map(s => String(s).toLowerCase())
-    return fields.some(f => f.indexOf(q) >= 0)
+    ]
+      .filter(Boolean)
+      .map((s) => String(s).toLowerCase())
+    return fields.some((f) => f.indexOf(q) >= 0)
   }
 }
 
@@ -83,7 +85,8 @@ const loadAll = () => getTranslatedSearchContent()
 
 const handleSelect = (item) => {
   // 使用安全的 routeCategory，避免不合法分类导致白屏
-  const target = (item && item.routeCategory) ? item.routeCategory : (item?.category || 'general').toLowerCase()
+  const target =
+    item && item.routeCategory ? item.routeCategory : (item?.category || 'general').toLowerCase()
   router.push({ path: `/preference/${target}` }).catch(() => {})
 }
 
@@ -112,7 +115,9 @@ onMounted(() => {
   }
   window.electron.ipcRenderer.on('settings::change-tab', onIpcCategoryChange)
   // 监听语言变化，刷新搜索索引
-  const languageChanged = () => { restaurants.value = loadAll() }
+  const languageChanged = () => {
+    restaurants.value = loadAll()
+  }
   window.addEventListener('languageChanged', languageChanged)
   // 卸载时移除监听
   onUnmounted(() => window.removeEventListener('languageChanged', languageChanged))
@@ -159,7 +164,7 @@ onUnmounted(() => {
     line-height: 35px;
   }
 }
-.pref-autocomplete.el-autocomplete-suggestion {
+.pref-autocomplete {
   background: var(--floatBgColor);
   border-color: var(--floatBorderColor);
   & .el-autocomplete-suggestion__wrap li:hover {
@@ -176,6 +181,7 @@ onUnmounted(() => {
     & .name {
       text-overflow: ellipsis;
       overflow: hidden;
+      font-weight: 600;
       color: var(--editorColor80);
     }
     & .addr {
