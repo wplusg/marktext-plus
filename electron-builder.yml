@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: marktext
+productName: MarkText+
 directories:
   buildResources: build
 files:
@@ -129,7 +129,7 @@ dmg:
 linux:
   artifactName: 'marktext-linux-${version}.${ext}'
   executableName: 'marktext'
-  description: 'A simple and elegant open-source markdown editor that focused on speed and usability.'
+  description: 'MarkText+ — an enhanced open-source text editor for markdown and beyond.'
   maintainer: 'MarkText Contributors'
   category: 'Office;TextEditor;Utility'
   mimeTypes:
@@ -137,7 +137,7 @@ linux:
   icon: 'static/icon.png'
   desktop:
     entry:
-      StartupWMClass: 'marktext'
+      StartupWMClass: 'marktext-plus'
       Keywords: 'marktext;'
   target:
     - AppImage
