@@ -92,7 +92,7 @@ const faceClick = (name) => {
 }
 
 const reportViaGithub = () => {
-  window.electron.shell.openExternal('https://github.com/wplusg/marktext-plus/issues/new')
+  window.electron.shell.openExternal('https://github.com/wglubrigati/marktext-plus/issues/new')
 }
 
 const reportViaTwitter = () => {
@@ -101,7 +101,7 @@ const reportViaTwitter = () => {
 
   const params = {
     via: 'marktextme',
-    url: encodeURI('https://github.com/wplusg/marktext-plus/'),
+    url: encodeURI('https://github.com/wglubrigati/marktext-plus/'),
     text: value.value
   }
 

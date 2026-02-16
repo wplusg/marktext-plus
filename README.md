@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/wplusg/marktext-plus/blob/main/LICENSE">
+  <a href="https://github.com/wglubrigati/marktext-plus/blob/main/LICENSE">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg">
   </a>
 </p>
@@ -51,14 +51,14 @@ Everything from MarkText you already love:
 
 ## Installation
 
-Download from the [Releases page](https://github.com/wplusg/marktext-plus/releases) — available for Windows, macOS, and Linux.
+Download from the [Releases page](https://github.com/wglubrigati/marktext-plus/releases) — available for Windows, macOS, and Linux.
 
 > **macOS users:** You may see a "damaged and can't be opened" warning due to lack of notarization. See [this fix](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300).
 
 ## Building from Source
 
 ```bash
-git clone https://github.com/wplusg/marktext-plus.git
+git clone https://github.com/wglubrigati/marktext-plus.git
 cd marktext-plus
 npm install
 npm run dev
@@ -84,4 +84,4 @@ Bug reports, pull requests, and testing on different platforms are all welcome.
 
 Copyright (c) 2017-present Luo Ran & MarkText Contributors
 Copyright (c) 2025 Teo Kai Xiang
-Copyright (c) 2026 William Guedes Lubrigati
+Copyright (c) 2026 William Lubrigati

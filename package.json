@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "MarkText+",
   "main": "./out/main/index.js",
-  "author": "William Guedes Lubrigati",
-  "homepage": "https://github.com/wplusg/marktext-plus",
+  "author": "William Lubrigati",
+  "homepage": "https://github.com/wglubrigati/marktext-plus",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wplusg/marktext-plus.git"
+    "url": "https://github.com/wglubrigati/marktext-plus.git"
   },
   "bugs": {
-    "url": "https://github.com/wplusg/marktext-plus/issues"
+    "url": "https://github.com/wglubrigati/marktext-plus/issues"
   },
   "license": "MIT",
   "keywords": [

@@ -627,7 +627,7 @@ const commands = [
     id: 'docs.user-guide',
     execute: async () => {
       window.electron.shell.openExternal(
-        'https://github.com/wplusg/marktext-plus/blob/main/docs/BASICS.md'
+        'https://github.com/wglubrigati/marktext-plus/blob/main/docs/BASICS.md'
       )
     }
   },
@@ -635,7 +635,7 @@ const commands = [
     id: 'docs.markdown-syntax',
     execute: async () => {
       window.electron.shell.openExternal(
-        'https://github.com/wplusg/marktext-plus/blob/main/docs/MARKDOWN_SYNTAX.md'
+        'https://github.com/wglubrigati/marktext-plus/blob/main/docs/MARKDOWN_SYNTAX.md'
       )
     }
   },
