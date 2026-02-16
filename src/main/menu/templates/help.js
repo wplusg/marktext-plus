@@ -37,14 +37,14 @@ export default function () {
         label: t('menu.help.markdownReference'),
         click() {
           shell.openExternal(
-            'https://github.com/Tkaixiang/marktext/blob/trunk/docs/MARKDOWN_SYNTAX.md'
+            'https://github.com/wplusg/marktext-plus/blob/main/docs/MARKDOWN_SYNTAX.md'
           )
         }
       },
       {
         label: t('menu.help.changelog'),
         click() {
-          shell.openExternal('https://github.com/Tkaixiang/marktext/releases')
+          shell.openExternal('https://github.com/wplusg/marktext-plus/releases')
         }
       },
       {
@@ -53,19 +53,19 @@ export default function () {
       {
         label: t('menu.help.askQuestion'),
         click() {
-          shell.openExternal('https://github.com/Tkaixiang/marktext/discussions')
+          shell.openExternal('https://github.com/wplusg/marktext-plus/discussions')
         }
       },
       {
         label: t('menu.help.reportBug'),
         click() {
-          shell.openExternal('https://github.com/Tkaixiang/marktext/issues')
+          shell.openExternal('https://github.com/wplusg/marktext-plus/issues')
         }
       },
       {
         label: t('menu.help.viewSource'),
         click() {
-          shell.openExternal('https://github.com/Tkaixiang/marktext')
+          shell.openExternal('https://github.com/wplusg/marktext-plus')
         }
       },
       {
@@ -74,7 +74,7 @@ export default function () {
       {
         label: t('menu.help.license'),
         click() {
-          shell.openExternal('https://github.com/Tkaixiang/marktext/blob/trunk/LICENSE')
+          shell.openExternal('https://github.com/wplusg/marktext-plus/blob/main/LICENSE')
         }
       }
     ]

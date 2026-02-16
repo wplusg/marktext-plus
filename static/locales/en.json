@@ -923,8 +923,8 @@
     "selectAll": "Select All"
   },
   "about": {
-    "copyright": "Copyright © Luo Ran 2017-{year}",
-    "copyrightContributors": "Made with <3 by Github Contributors"
+    "copyright": "Copyright © 2017-{year} MarkText Contributors",
+    "copyrightContributors": "Made with <3 by the open-source community"
   },
   "commands": {
     "mt": {

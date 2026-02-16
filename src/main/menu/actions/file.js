@@ -499,7 +499,7 @@ ipcMain.on('mt::format-link-click', (e, { data, dirname }) => {
   }
 
   if (pathname) {
-    // decodeURIComponent() CommonMark #503, allow percent encoded path names to open files. https://github.com/Tkaixiang/marktext/issues/57
+    // decodeURIComponent() CommonMark #503, allow percent encoded path names to open files.
     pathname = path.normalize(decodeURIComponent(pathname))
     const win = BrowserWindow.fromWebContents(e.sender)
     openFileOrFolder(win, pathname)
