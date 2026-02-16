@@ -1056,7 +1056,8 @@ export const useEditorStore = defineStore('editor', {
       } else if (this.tabs.length === 0) {
         return
       } else if (!(id in this.tabIdToIndex)) {
-        throw new Error(`Cannot find tab with id "${id}" in tab list!`)
+        // Tab was already closed — ignore late content change events.
+        return
       }
 
       const tab = this.tabs[this.tabIdToIndex[id]]
