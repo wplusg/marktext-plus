@@ -1,19 +1,13 @@
-<p align="center"><img src="static/logo-small.png" alt="MarkText+" width="100" height="100"></p>
+<p align="center"><img src="static/logo-small.png" alt="MarkText+" width="128" height="128"></p>
 
 <h1 align="center">MarkText+</h1>
 
 <p align="center">
-  <strong>A modern, enhanced fork of MarkText — the elegant markdown editor.</strong><br>
-  Built on top of <a href="https://github.com/Tkaixiang/marktext">Tkaixiang's modernized fork</a>, with stability fixes, multi-format file support, and smarter dirty-state detection.
+  A modern, enhanced fork of <a href="https://github.com/marktext/marktext">MarkText</a> — the elegant markdown editor.<br>
+  Focused on <strong>stability</strong>, <strong>daily usability</strong>, and going beyond markdown-only editing.
 </p>
 
 <p align="center">
-  <a href="https://github.com/wplusg/marktext-plus/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/wplusg/marktext-plus">
-  </a>
-  <a href="https://github.com/wplusg/marktext-plus/releases">
-    <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/wplusg/marktext-plus/total">
-  </a>
   <a href="https://github.com/wplusg/marktext-plus/blob/main/LICENSE">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg">
   </a>
@@ -23,109 +17,70 @@
 
 ## Why MarkText+?
 
-[MarkText](https://github.com/marktext/marktext) is one of the best open-source markdown editors out there — minimal, fast, and distraction-free. But the original project has been unmaintained for years. [Tkaixiang's fork](https://github.com/Tkaixiang/marktext) did an incredible job modernizing it (Vue 3, Pinia, electron-vite), but there were still rough edges in daily use: false "unsaved changes" prompts, crashes on edge cases, and a strict markdown-only limitation.
+[MarkText](https://github.com/marktext/marktext) is one of the best open-source markdown editors — minimal, fast, and distraction-free. But the original project has been unmaintained for years.
 
-**MarkText+** picks up where those projects left off, focusing on **stability** and **practical improvements** for daily use.
+[Tkaixiang's fork](https://github.com/Tkaixiang/marktext) did a great job modernizing the codebase (Vue 3, Pinia, electron-vite, i18n support), but there were still rough edges in daily use: false "unsaved changes" prompts, occasional crashes, and the inability to open anything other than markdown files.
 
-## What's New in MarkText+
+**MarkText+** picks up where those projects left off.
 
-### Open Any File, Not Just Markdown
-- Open and edit **any text file** directly — `.json`, `.yaml`, `.js`, `.py`, `.txt`, and more
-- Non-markdown files open in **source code mode** with proper syntax highlighting via CodeMirror
-- Quick Open (`Ctrl+P`) now searches **all files** in your project, not just `.md`
-- Sidebar file tree allows clicking on any file type
-- Drag & drop support for all file types
+## What's New
 
-### Smarter Dirty-State Detection
-- No more phantom "unsaved changes" dialogs after opening a file
-- Content-based dirty detection anchors the normalized markdown after Muya's initial processing
-- Edit-then-undo correctly shows the file as clean again
-
-### Stability Fixes
-- Fixed crash when history stack is empty and save is triggered
-- Fixed race condition when saving blocks/cursor state during tab switches
-- Fixed crash when cursor points to an invalid block after switching tabs
-- Source code mode: guards against null refs on tab switch and scroll events
-- Watcher: prevents duplicate watchers on already-open files (which caused data loss on reload)
-
-### Auto-Reload Unmodified Files
-- New experimental setting: files that haven't been edited locally are automatically reloaded when changed on disk
-
-### Notification System Improvements
-- Auto-hide notifications with countdown timer
-- Success notification type
-
-### Performance
-- Ignored binary/generated file extensions in file watcher (images, fonts, archives, lock files, etc.)
-- Reduced unnecessary I/O for non-text files in the sidebar
-
-### Experimental Preferences Panel
-- New "Experimental" category in Preferences for opt-in features
-
-<!-- TODO: Add screenshot of MarkText+ in action -->
+- **Open any text file** — not just markdown. JSON, YAML, Python, JavaScript, and more open with syntax highlighting
+- **No more phantom "unsaved" warnings** — files no longer appear dirty right after opening
+- **Undo fully works** — editing and undoing back to the original content correctly marks the file as clean
+- **Fewer crashes** — fixed several crash scenarios around tab switching, empty history, and file watchers
+- **Auto-reload files** — unmodified files automatically update when changed on disk (configurable)
+- **Smarter file watcher** — ignores binary files (images, fonts, archives) to reduce unnecessary I/O
+- **Quick Open finds everything** — `Ctrl+P` searches all files in your project, not just `.md`
+- **Drag & drop any file** — drop files onto the editor to open them regardless of extension
+- **Auto-hide notifications** — notifications with countdown timers that dismiss themselves
+- **Experimental preferences** — new settings category for opt-in features
 
 ## Features
 
 Everything from MarkText you already love:
 
-- WYSIWYG real-time preview with a clean, distraction-free interface
-- [CommonMark](https://spec.commonmark.org/0.29/), [GitHub Flavored Markdown](https://github.github.com/gfm/), and selective [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) support
-- Math expressions (KaTeX), front matter, emojis, Mermaid diagrams
-- **33 built-in themes** — Dracula, Nord, Catppuccin, Tokyo Night, Gruvbox, and more
+- Real-time WYSIWYG preview with a clean, distraction-free interface
+- CommonMark, GitHub Flavored Markdown, and Pandoc support
+- Math expressions (KaTeX), Mermaid diagrams, front matter, emojis
+- **33 built-in themes** — Dracula, Nord, Catppuccin, Tokyo Night, Gruvbox, and many more
 - Source Code, Typewriter, and Focus editing modes
-- Paste images from clipboard
+- Paste images directly from clipboard
 - Export to HTML and PDF
-- **9 languages** available from Preferences
+- Available in **9 languages**
 
 ## Installation
 
-Download the latest release for your platform from the [Releases page](https://github.com/wplusg/marktext-plus/releases).
+Download from the [Releases page](https://github.com/wplusg/marktext-plus/releases) — available for Windows, macOS, and Linux.
 
-| Platform | Format |
-|----------|--------|
-| Windows  | `.exe` installer |
-| macOS    | `.dmg` |
-| Linux    | `.AppImage`, `.deb`, `.rpm`, `.snap` |
-
-> **macOS note:** You may see a "damaged and can't be opened" warning due to lack of notarization. See [this fix](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300).
+> **macOS users:** You may see a "damaged and can't be opened" warning due to lack of notarization. See [this fix](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300).
 
 ## Building from Source
 
 ```bash
-# Clone
 git clone https://github.com/wplusg/marktext-plus.git
 cd marktext-plus
-
-# Install dependencies
 npm install
-
-# Development
 npm run dev
-
-# Build for your platform
-npm run build:linux   # or build:win / build:mac
 ```
+
+To build distributable packages: `npm run build:linux`, `build:win`, or `build:mac`.
 
 ## Acknowledgements
 
 MarkText+ stands on the shoulders of giants:
 
-- **[MarkText](https://github.com/marktext/marktext)** by [Jocs (Luo Ran)](https://github.com/Jocs) and [contributors](https://github.com/marktext/marktext/graphs/contributors) — the original, beautiful markdown editor
-- **[Tkaixiang's fork](https://github.com/Tkaixiang/marktext)** by [Teo Kai Xiang](https://github.com/Tkaixiang) — the massive modernization effort (Vue 3, Pinia, electron-vite, i18n)
-- **[Jacob Whall's fork](https://github.com/jacobwhall/marktext)** — early maintenance efforts that kept the project alive
+- **[MarkText](https://github.com/marktext/marktext)** by [Jocs (Luo Ran)](https://github.com/Jocs) and [contributors](https://github.com/marktext/marktext/graphs/contributors) — the original editor
+- **[Tkaixiang's fork](https://github.com/Tkaixiang/marktext)** by [Teo Kai Xiang](https://github.com/Tkaixiang) — the Vue 3 / electron-vite modernization and i18n
+- **[Jacob Whall's fork](https://github.com/jacobwhall/marktext)** — early maintenance efforts
 
 ## Contributing
 
-Contributions are welcome! Whether it's bug reports, pull requests, or just testing on your platform — all help is appreciated.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes
-4. Push to the branch and open a Pull Request
+Bug reports, pull requests, and testing on different platforms are all welcome.
 
 ## License
 
-[MIT](LICENSE) — see the LICENSE file for full details.
+[MIT](LICENSE)
 
 Copyright (c) 2017-present Luo Ran & MarkText Contributors
 Copyright (c) 2025 Teo Kai Xiang
