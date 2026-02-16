@@ -551,6 +551,19 @@ export const useEditorStore = defineStore('editor', {
           scrollTop,
           blocks
         })
+
+        // Enforce source code mode for non-markdown files, restore for markdown
+        const preferencesStore = usePreferencesStore()
+        const filename = currentFile.filename || ''
+        const isMarkdown = !filename || window.fileUtils.hasMarkdownExtension(filename)
+        if (!isMarkdown && !preferencesStore.sourceCode) {
+          preferencesStore.SET_MODE({ type: 'sourceCode', checked: true })
+          preferencesStore.DISPATCH_EDITOR_VIEW_STATE({ sourceCode: true })
+        } else if (isMarkdown && preferencesStore.sourceCode && !preferencesStore._userSourceCode) {
+          // Restore WYSIWYG mode for markdown files (only if user didn't manually enable source code)
+          preferencesStore.SET_MODE({ type: 'sourceCode', checked: false })
+          preferencesStore.DISPATCH_EDITOR_VIEW_STATE({ sourceCode: false })
+        }
       }
 
       if (!this.tabs.some((file) => file.id === currentFile.id)) {

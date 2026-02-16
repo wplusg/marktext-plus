@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useEditorStore } from './editor'
 import bus from '../bus'
 import { setLanguage } from '../i18n'
 
@@ -91,6 +92,7 @@ export const usePreferencesStore = defineStore('preferences', {
     typewriter: false, // typewriter mode
     focus: false, // focus mode
     sourceCode: false, // source code mode
+    _userSourceCode: false, // whether the user manually toggled source code mode
 
     // user configration
     imageFolderPath: '',
@@ -131,7 +133,19 @@ export const usePreferencesStore = defineStore('preferences', {
       this[type] = checked
     },
     TOGGLE_VIEW_MODE(entryName) {
+      // Prevent disabling source code mode for non-markdown files
+      if (entryName === 'sourceCode' && this.sourceCode) {
+        const editorStore = useEditorStore()
+        const filename = editorStore.currentFile?.filename || ''
+        if (filename && !window.fileUtils.hasMarkdownExtension(filename)) {
+          return
+        }
+      }
       this[entryName] = !this[entryName]
+      // Track user intent for source code mode
+      if (entryName === 'sourceCode') {
+        this._userSourceCode = this.sourceCode
+      }
     },
     ASK_FOR_USER_PREFERENCE() {
       window.electron.ipcRenderer.send('mt::ask-for-user-preference')
