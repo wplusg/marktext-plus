@@ -72,7 +72,7 @@ const getMarkdownAndCursor = (cm) => {
 
 const prepareTabSwitch = () => {
   if (commitTimer.value) clearTimeout(commitTimer.value)
-  if (tabId.value) {
+  if (tabId.value && editor.value && tabId.value in editorStore.tabIdToIndex) {
     const { cursor, markdown: newMarkdown } = getMarkdownAndCursor(editor.value)
     editorStore.LISTEN_FOR_CONTENT_CHANGE({
       id: tabId.value,
@@ -85,31 +85,53 @@ const prepareTabSwitch = () => {
 
 const scrollToCords = (y) => {
   requestAnimationFrame(() => {
-    // Ensures there we have scrolled to that position before the browser paints the next frame
-    // prevents "flickers"
-    sourceCodeContainer.value.scrollTop = y
+    if (sourceCodeContainer.value) {
+      sourceCodeContainer.value.scrollTop = y
+    }
   })
 }
 
 const handleFileChange = ({ id, markdown: newMarkdown, cursor, scrollTop }) => {
+  if (!editor.value) return
   prepareTabSwitch()
 
   if (typeof newMarkdown === 'string') {
     editor.value.setValue(newMarkdown)
   }
 
-  // t('editor.sourceCode.cursorNullComment')
-
-  if (cursor) {
-    const { anchor, focus } = cursor
-    editor.value.setSelection(anchor, focus, { scroll: true }) // Scroll the focus into view.
-  } else {
-    setCursorAtFirstLine(editor.value)
+  // Update mode based on current file's extension
+  const filename = editorStore.currentFile.filename || ''
+  const extMatch = filename.match(/\.([^.]+)$/)
+  const ext = extMatch ? extMatch[1].toLowerCase() : ''
+  const modeInfo = codeMirror.findModeByExtension(ext)
+  if (modeInfo && !window.fileUtils.hasMarkdownExtension(filename)) {
+    codeMirror.requireMode(modeInfo.mode, () => {
+      if (editor.value) {
+        editor.value.setOption('mode', modeInfo.mime || modeInfo.mode)
+      }
+    })
+  } else if (editor.value) {
+    setMode(editor.value, 'markdown')
   }
 
-  if (typeof scrollTop === 'number') {
-    scrollToCords(scrollTop)
-  }
+  // Defer cursor/scroll operations to next tick so CodeMirror finishes processing setValue
+  requestAnimationFrame(() => {
+    if (!editor.value) return
+    try {
+      if (cursor) {
+        const { anchor, focus } = cursor
+        editor.value.setSelection(anchor, focus, { scroll: true })
+      } else {
+        setCursorAtFirstLine(editor.value)
+      }
+
+      if (typeof scrollTop === 'number') {
+        scrollToCords(scrollTop)
+      }
+    } catch (e) {
+      // CodeMirror doc may not be ready yet — ignore
+    }
+  })
   tabId.value = id
 }
 
@@ -258,7 +280,18 @@ onMounted(() => {
   // See https://github.com/codemirror/codemirror5/issues/6886 - hence, we need to use a local variable first.
   const codeMirrorInstance = codeMirror(container, codeMirrorConfig)
 
-  setMode(codeMirrorInstance, 'markdown')
+  // Detect mode from file extension, fallback to markdown
+  const currentFilename = editorStore.currentFile.filename || ''
+  const extMatch = currentFilename.match(/\.([^.]+)$/)
+  const ext = extMatch ? extMatch[1].toLowerCase() : ''
+  const modeInfo = codeMirror.findModeByExtension(ext)
+  if (modeInfo && !window.fileUtils.hasMarkdownExtension(currentFilename)) {
+    codeMirror.requireMode(modeInfo.mode, () => {
+      codeMirrorInstance.setOption('mode', modeInfo.mime || modeInfo.mode)
+    })
+  } else {
+    setMode(codeMirrorInstance, 'markdown')
+  }
 
   codeMirrorInstance.on('contextmenu', (cm, event) => {
     event.preventDefault()
@@ -300,7 +333,9 @@ onBeforeUnmount(() => {
 })
 
 const handleScroll = debounce(() => {
-  editorStore.updateScrollPosition(tabId.value, sourceCodeContainer.value.scrollTop)
+  if (sourceCodeContainer.value && tabId.value) {
+    editorStore.updateScrollPosition(tabId.value, sourceCodeContainer.value.scrollTop)
+  }
 }, 500)
 </script>
 

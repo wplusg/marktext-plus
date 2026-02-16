@@ -42,6 +42,15 @@ export const normalizeMarkdownPath = (pathname) => {
       console.error(`[ERROR] Cannot resolve "${pathname}".`)
     }
   }
+
+  // Allow opening non-markdown files (they'll open in source code mode)
+  if (!isDir) {
+    const resolved = normalizeAndResolvePath(pathname)
+    if (resolved) {
+      return { isDir: false, path: resolved }
+    }
+  }
+
   return null
 }
 

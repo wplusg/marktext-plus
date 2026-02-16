@@ -175,16 +175,8 @@ class QuickOpenCommand {
   }
 
   _getInclusions = (query) => {
-    // NOTE: This will fail on `foo.m` because we search for `foo.m.md`.
-    if (window.fileUtils.hasMarkdownExtension(query)) {
-      return [`*${query}`]
-    }
-
-    const inclusions = []
-    for (let i = 0; i < window.fileUtils.MARKDOWN_INCLUSIONS.length; ++i) {
-      inclusions[i] = `*${query}` + window.fileUtils.MARKDOWN_INCLUSIONS[i]
-    }
-    return inclusions
+    // Match all files, not just markdown
+    return [`*${query}*`]
   }
 
   _getPath = (pathname) => {

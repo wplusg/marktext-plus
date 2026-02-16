@@ -178,7 +178,7 @@ export const useProjectStore = defineStore('project', {
     CREATE_FILE_DIRECTORY(name) {
       const { dirname, type } = this.createCache
 
-      if (type === 'file' && !window.fileUtils.hasMarkdownExtension(name)) {
+      if (type === 'file' && !name.includes('.')) {
         name += '.md'
       }
 

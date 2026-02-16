@@ -10,6 +10,37 @@ import { isLinux, isOsx } from '../config'
 
 // TODO(refactor): Please see GH#1035.
 
+// Binary and generated file extensions to ignore in the watcher.
+// These are never useful as editable text and cause unnecessary I/O.
+const IGNORED_EXTENSIONS = new Set([
+  // Images
+  '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.ico', '.webp', '.tiff', '.tif', '.svg',
+  '.psd', '.ai', '.eps', '.raw', '.cr2', '.nef', '.heic', '.avif',
+  // Fonts
+  '.woff', '.woff2', '.ttf', '.otf', '.eot',
+  // Audio/Video
+  '.mp3', '.mp4', '.wav', '.ogg', '.flac', '.aac', '.m4a', '.wma',
+  '.avi', '.mkv', '.mov', '.wmv', '.flv', '.webm',
+  // Archives
+  '.zip', '.tar', '.gz', '.bz2', '.xz', '.7z', '.rar', '.zst',
+  // Compiled/binary
+  '.exe', '.dll', '.so', '.dylib', '.o', '.obj', '.a', '.lib', '.class', '.pyc', '.pyo',
+  '.wasm', '.bin', '.dat',
+  // Documents (non-editable)
+  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+  // Database
+  '.db', '.sqlite', '.sqlite3',
+  // Disk images / packages
+  '.iso', '.dmg', '.deb', '.rpm', '.snap', '.AppImage', '.msi',
+  // Lock files (large, generated)
+  '.lock'
+])
+
+const hasIgnoredExtension = (pathname) => {
+  const ext = path.extname(pathname).toLowerCase()
+  return IGNORED_EXTENSIONS.has(ext)
+}
+
 export const WATCHER_STABILITY_THRESHOLD = 1000
 export const WATCHER_STABILITY_POLL_INTERVAL = 150
 
@@ -38,7 +69,7 @@ const add = async (
     birthTime,
     isMarkdown
   }
-  if (isMarkdown) {
+  if (isMarkdown && type === 'file') {
     // HACK: But this should be removed completely in #1034/#1035.
     try {
       const data = await loadMarkdownFile(
@@ -50,21 +81,18 @@ const add = async (
       )
       file.data = data
     } catch (err) {
-      // Only notify user about opened files.
-      if (type === 'file') {
-        win.webContents.send('mt::show-notification', {
-          title: 'Watcher I/O error',
-          type: 'error',
-          message: err.message
-        })
-        return
-      }
+      win.webContents.send('mt::show-notification', {
+        title: 'Watcher I/O error',
+        type: 'error',
+        message: err.message
+      })
+      return
     }
-    win.webContents.send(EVENT_NAME[type], {
-      type: 'add',
-      change: file
-    })
   }
+  win.webContents.send(EVENT_NAME[type], {
+    type: 'add',
+    change: file
+  })
 }
 
 const unlink = (win, pathname, type) => {
@@ -87,37 +115,32 @@ const change = async (
   // No need to update the tree view if the file content has changed.
   if (type === 'dir') return
 
-  const isMarkdown = hasMarkdownExtension(pathname)
-  if (isMarkdown) {
-    // HACK: Markdown data should be removed completely in #1034/#1035 and
-    // should be only loaded after user interaction.
-    try {
-      const data = await loadMarkdownFile(
-        pathname,
-        endOfLine,
-        autoGuessEncoding,
-        trimTrailingNewline,
-        autoNormalizeLineEndings
-      )
-      const file = {
-        pathname,
-        data
-      }
-      win.webContents.send('mt::update-file', {
-        type: 'change',
-        change: file
+  const file = { pathname }
+
+  try {
+    const data = await loadMarkdownFile(
+      pathname,
+      endOfLine,
+      autoGuessEncoding,
+      trimTrailingNewline,
+      autoNormalizeLineEndings
+    )
+    file.data = data
+  } catch (err) {
+    if (type === 'file') {
+      win.webContents.send('mt::show-notification', {
+        title: 'Watcher I/O error',
+        type: 'error',
+        message: err.message
       })
-    } catch (err) {
-      // Only notify user about opened files.
-      if (type === 'file') {
-        win.webContents.send('mt::show-notification', {
-          title: 'Watcher I/O error',
-          type: 'error',
-          message: err.message
-        })
-      }
     }
+    return
   }
+
+  win.webContents.send('mt::update-file', {
+    type: 'change',
+    change: file
+  })
 }
 
 const addDir = (win, pathname, type) => {
@@ -186,7 +209,7 @@ class Watcher {
         if (fileInfo.isDirectory()) {
           return false
         }
-        return !hasMarkdownExtension(pathname)
+        return hasIgnoredExtension(pathname)
       },
       ignoreInitial: type === 'file',
       persistent: true,

@@ -373,12 +373,7 @@ ipcMain.on('mt::response-print', handleResponseForPrint)
 ipcMain.on('mt::window::drop', async (e, fileList) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   for (const file of fileList) {
-    if (isMarkdownFile(file)) {
-      openFileOrFolder(win, file)
-      continue
-    }
-
-    // Try to import the file
+    // Try to import pandoc files first
     if (PANDOC_EXTENSIONS.some((ext) => file.endsWith(ext))) {
       const existsPandoc = pandoc.exists()
       if (!existsPandoc) {
@@ -386,8 +381,11 @@ ipcMain.on('mt::window::drop', async (e, fileList) => {
       } else {
         openPandocFile(win.id, file)
       }
-      break
+      continue
     }
+
+    // Open any file (markdown or otherwise)
+    openFileOrFolder(win, file)
   }
 })
 
@@ -503,12 +501,8 @@ ipcMain.on('mt::format-link-click', (e, { data, dirname }) => {
   if (pathname) {
     // decodeURIComponent() CommonMark #503, allow percent encoded path names to open files. https://github.com/Tkaixiang/marktext/issues/57
     pathname = path.normalize(decodeURIComponent(pathname))
-    if (isMarkdownFile(pathname)) {
-      const win = BrowserWindow.fromWebContents(e.sender)
-      openFileOrFolder(win, pathname)
-    } else {
-      shell.openPath(pathname)
-    }
+    const win = BrowserWindow.fromWebContents(e.sender)
+    openFileOrFolder(win, pathname)
   }
 })
 
@@ -578,6 +572,10 @@ export const openFile = async (win) => {
   const { filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openFile', 'multiSelections'],
     filters: [
+      {
+        name: 'All Files',
+        extensions: ['*']
+      },
       {
         name: 'Markdown document',
         extensions: MARKDOWN_EXTENSIONS

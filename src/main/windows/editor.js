@@ -3,7 +3,7 @@ import { BrowserWindow, dialog, ipcMain } from 'electron'
 import { enable as remoteEnable } from '@electron/remote/main'
 import log from 'electron-log'
 import windowStateKeeper from 'electron-window-state'
-import { isChildOfDirectory, isSamePathSync } from 'common/filesystem/paths'
+import { isChildOfDirectory, isSamePathSync, hasMarkdownExtension } from 'common/filesystem/paths'
 import BaseWindow, { WindowLifecycle, WindowType } from './base'
 import { ensureWindowPosition, zoomIn, zoomOut } from './utils'
 import { TITLE_BAR_HEIGHT, editorWinOptions, isLinux, isOsx } from '../config'
@@ -269,6 +269,12 @@ class EditorWindow extends BaseWindow {
         browserWindow.webContents.send('mt::switch-tab-by-file_path', filePath)
         continue
       }
+
+      // Force source code mode for non-markdown files
+      if (!hasMarkdownExtension(filePath)) {
+        options.forceSourceCodeMode = true
+      }
+
       loadMarkdownFile(
         filePath,
         eol,

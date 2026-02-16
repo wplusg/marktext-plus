@@ -57,8 +57,7 @@ const { currentFile, tabs } = storeToRefs(editorStore)
 
 // from fileMixins
 const handleFileClick = () => {
-  const { isMarkdown, pathname } = props.file
-  if (!isMarkdown) return
+  const { pathname } = props.file
   const openedTab = tabs.value.find((f) => window.fileUtils.isSamePathSync(f.pathname, pathname))
   if (openedTab) {
     if (currentFile.value.pathname === openedTab.pathname) {
