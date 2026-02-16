@@ -247,14 +247,18 @@ onMounted(() => {
   const { markdown, muyaIndexCursor, textDirection } = props
   const container = sourceCodeContainer.value
   container.addEventListener('scroll', handleScroll)
+  // For large files, use a finite viewport margin so CodeMirror only renders
+  // visible lines instead of the entire document. Threshold: 50k characters.
+  const isLargeFile = markdown.length > 50000
+
   const codeMirrorConfig = {
     value: markdown,
     lineNumbers: true,
     autofocus: true,
-    lineWrapping: true,
+    lineWrapping: !isLargeFile,
     styleActiveLine: true,
     direction: textDirection,
-    viewportMargin: Infinity,
+    viewportMargin: isLargeFile ? 50 : Infinity,
     lineNumberFormatter(line) {
       if (line % 10 === 0 || line === 1) {
         return line

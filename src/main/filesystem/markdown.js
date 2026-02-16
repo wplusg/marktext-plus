@@ -96,7 +96,14 @@ export const loadMarkdownFile = async (
   // TODO: Use streams to not buffer the file multiple times and only guess
   //       encoding on the first 256/512 bytes.
 
-  let buffer = await fsPromises.readFile(path.resolve(pathname))
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+  const resolvedPath = path.resolve(pathname)
+  const stat = await fsPromises.stat(resolvedPath)
+  if (stat.size > MAX_FILE_SIZE) {
+    throw new Error(`File is too large (${(stat.size / 1024 / 1024).toFixed(1)} MB). Maximum supported size is 10 MB.`)
+  }
+
+  let buffer = await fsPromises.readFile(resolvedPath)
 
   const encoding = guessEncoding(buffer, autoGuessEncoding)
   const supported = iconv.encodingExists(encoding.encoding)
