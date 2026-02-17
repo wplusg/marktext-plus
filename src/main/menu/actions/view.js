@@ -129,9 +129,9 @@ export const viewLayoutChanged = (applicationMenu, changes) => {
         if (formatMenuItem) {
           formatMenuItem.submenu.items.forEach(item => (item.enabled = !value))
         }
-        const paragraphMenuItem = applicationMenu.getMenuItemById('paragraphMenuItem')
-        if (paragraphMenuItem) {
-          paragraphMenuItem.submenu.items.forEach(item => (item.enabled = !value))
+        const paragraphMenu = applicationMenu.getMenuItemById('paragraphMenuEntry')
+        if (paragraphMenu) {
+          paragraphMenu.submenu.items.forEach(item => (item.enabled = !value))
         }
         break
       }
