@@ -1,4 +1,4 @@
-name: Build/release Marktext
+name: Build/release MarkText+
 
 on:
   push:
@@ -11,11 +11,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install python 3.12
         uses: actions/setup-python@v5
@@ -23,74 +23,54 @@ jobs:
           python-version: '3.12'
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 22.21.1
+          node-version-file: '.nvmrc'
 
       - name: Install Linux Build Dependencies
-        if: matrix.os == 'ubuntu-22.04'
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y icnsutils graphicsmagick xz-utils libx11-dev libxkbfile-dev gnome-keyring libsecret-1-dev libfontconfig-dev rpm
 
-        # --ignore-scripts first to prevent postinstall scripts from running (we will run electron-rebuild manually later)
-        # --no-audit and --no-fund to reduce noise
       - name: Install Dependencies
         run: npm ci --no-audit --no-fund --ignore-scripts --loglevel verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Electron seems to require C++20 support for native modules now after Electron 33
+      # Electron requires C++20 support for native modules after Electron 33
       - name: Set C++20 for MacOS
-        if: matrix.os == 'macos-latest'
+        if: runner.os == 'macOS'
         run: |
           echo "CXXFLAGS=-std=gnu++20 -stdlib=libc++" >> $GITHUB_ENV
 
-      - name: Rebuild native modules for Electron (MacOS + Windows)
-        if: matrix.os != 'ubuntu-22.04'
-        run: npx @electron/rebuild -f
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Enforce using gcc/g++ on Linux for electron-rebuild instead of clang (.npmrc covers some settings too)
-      - name: Rebuild native modules for Electron (Ubuntu)
-        if: matrix.os == 'ubuntu-22.04'
-        run: USE_ELECTRON_CLANG=0 npx @electron/rebuild -f
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: build-linux
-        if: matrix.os == 'ubuntu-22.04'
+        if: runner.os == 'Linux'
         run: npm run build:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USE_ELECTRON_CLANG: '0'
 
-      # Mac builds have been disabled due to a lack of a Developer ID to sign it
-      # All builds by default will give a "this app is damaged and can't be opened" error
       - name: build-mac
-        if: matrix.os == 'macos-latest'
+        if: runner.os == 'macOS'
         run: npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: build-win
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: false
-          preRelease: true
+          prerelease: false
           generate_release_notes: true
-          name: 'Pre-release ${{ github.ref_name }}'
+          name: '${{ github.ref_name }}'
           body: |
-            ## ❗This is a Pre-release
-            - This is a pre-release build of MarkText, it will most likely contain bugs and unfinished features.
-
-            ## ⚠️ Note for MacOS Users
-            - MacOS releases will show a "`Apple couldn't verify MarkText is free of viruses...`" due to a **lack of notorisation**. 
-            - Please run the following commands [based off this fix here](https://github.com/marktext/marktext/issues/3004#issuecomment-1038207300) after you have dragged MarkText into the "Applications" folder
+            ## Note for MacOS Users
+            MacOS releases are **not notarized**. After dragging MarkText+ into Applications, run:
             ```
             xattr -cr /Applications/marktext.app
             sudo codesign --force --deep --sign - /Applications/marktext.app
