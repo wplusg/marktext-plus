@@ -1,5 +1,9 @@
 appId: com.electron.app
 productName: MarkText+
+publish:
+  provider: github
+  owner: wglubrigati
+  repo: marktext-plus
 directories:
   buildResources: build
 files:
